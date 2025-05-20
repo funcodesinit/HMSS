@@ -1,4 +1,3 @@
-import { prisma } from "@/lib/prisma"
 import { ActionTypes } from "../constants/action-types"
 import guests from '@/app/api/apisauce/guests'
 
