@@ -1,0 +1,153 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Session {
+  id           Int      @id @default(autoincrement())
+  sessionToken String   @unique @map("session_token")
+  userId       Int      @map("user_id")
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model User {
+  id            Int       @id @default(autoincrement())
+  phoneNumber   String    @unique
+  email         String?   @unique
+  emailVerified DateTime? @map("email_verified")
+  firstName     String?
+  lastName      String?
+  password      String?
+  role          UserType  @default(STAFF)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  address       String?
+  position      String?
+  company       String?
+  city          String?
+  country       String?
+  province      String?
+  postalAdd     String?
+  isActive      Boolean?
+  avatar        String?
+
+  // Relations
+
+  sessions Session[]
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+model Guest {
+  id                 String   @id @default(uuid())
+  firstName          String
+  lastName           String
+  email              String   @unique
+  phoneNumber        String?
+  idNo               String?
+  company            String?
+  city               String?
+  country            String?
+  province           String?
+  address            String?
+  signature          String?
+  purpose_tourist    Boolean? @default(false)
+  purpose_conference Boolean? @default(false)
+  purpose_group      Boolean? @default(false)
+  purpose_business   Boolean? @default(false)
+  purpose_cash       Boolean? @default(false)
+  purpose_company    Boolean? @default(false)
+  purpose_card       Boolean? @default(false)
+
+  createdAt DateTime @default(now())
+
+  reservations Reservation[]
+  billing      Billing[]
+}
+
+model Reservation {
+  id            String            @id @default(uuid())
+  guestId       String
+  guest         Guest             @relation(fields: [guestId], references: [id])
+  roomId        String
+  room          Room              @relation(fields: [roomId], references: [id])
+  checkInDate   DateTime
+  checkOutDate  DateTime
+  adults        String?
+  children      String?
+  extraBed      Boolean?
+  bookedBy      String?
+  receiptionist String?
+  dutyManager   String?
+  status        ReservationStatus @default(PENDING)
+  createdAt     DateTime          @default(now())
+  Billing       Billing[]
+}
+
+model Room {
+  id            String        @id @default(uuid())
+  number        String        @unique
+  type          RoomType
+  pricePerNight Float?
+  status        RoomStatus    @default(AVAILABLE)
+  reservations  Reservation[]
+}
+
+model Billing {
+  id            String      @id @default(uuid())
+  guestId       String
+  guest         Guest       @relation(fields: [guestId], references: [id])
+  reservationId String
+  reservation   Reservation @relation(fields: [reservationId], references: [id])
+  amount        Float
+  createdAt     DateTime    @default(now())
+  paid          Boolean     @default(false)
+}
+
+enum ReservationStatus {
+  PENDING
+  CONFIRMED
+  CHECKED_IN
+  CHECKED_OUT
+  CANCELLED
+}
+
+enum RoomStatus {
+  AVAILABLE
+  OCCUPIED
+  RESERVED
+  MAINTENANCE
+}
+
+enum RoomType {
+  STANDARD
+  A_FRAMES
+  FLOATING
+  EXECUTIVE
+}
+
+enum UserType {
+  STAFF
+  ADMIN
+}
