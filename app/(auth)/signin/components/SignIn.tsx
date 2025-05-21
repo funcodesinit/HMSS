@@ -35,7 +35,7 @@ export default function SignInComp() {
     }
     const signin = await signIn('credentials', signInData);
     if (signin?.error) {
-      console.log("Signin Error:", signin); // Log the error object for debugging
+      // console.log("Signin Error:", signin); // Log the error object for debugging
       setError("Invalid Credentials, please check your phone number and password.");
       setLoading(false); // Reset loading state when error occurs
     } else {

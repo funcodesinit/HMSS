@@ -22,7 +22,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           where:{
             email: credentials?.email
           }})
-          console.log( 'credentials' , credentials, user )
      
         const isValid = await bcrypt.compare(credentials?.password, user?.password)
 

@@ -17,9 +17,9 @@ const list = async (options = {}) => {
   );
 };
 
-const get = async (id: any, options = {}) => {
+const getDetails = async (id: any, options = {}) => {
   return client.get(
-    `${basePath}/${id}`,
+    `frontdesk/guests/${id}/api`,
     {
       ...options,
       headers: {
@@ -29,18 +29,9 @@ const get = async (id: any, options = {}) => {
   );
 };
 
-const create = async (data: any, options = {}) => {
-  return client.post(basePath, data, {
-    ...options,
-    headers: {
-      Accept: "application/json"
-    }
-  });
-};
+ 
 
 export default {
   list,
-  get,
-  create,
-
+  getDetails, 
 };

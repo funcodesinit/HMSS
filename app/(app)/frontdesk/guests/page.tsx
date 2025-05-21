@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import CustomerListComp from './components/CustomerList'
+import CustomerListComp from './components/GuestList'
 
 export const metadata: Metadata = {
   title: 'Guests',

@@ -1,14 +1,71 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
+ ;
 
-
-export async function GET(req: Request) {
+export async function GET(req: NextRequest) {
   try {
+    const { searchParams } = new URL(req.url);
 
-    const guests = await prisma.guest.findMany();
+    // Pagination params
+    const page = parseInt(searchParams.get("page") || "1");
+    const limit = parseInt(searchParams.get("limit") || "10");
+    const skip = (page - 1) * limit;
 
-    return NextResponse.json(guests, { status: 200 }
+    // Search query
+    const search = searchParams.get("search")?.toLowerCase() || "";
+
+    // Filters
+    const country = searchParams.get("country");
+    const city = searchParams.get("city");
+    const company = searchParams.get("company");
+
+    // Build dynamic where clause
+    const whereClause: any = {};
+
+    if (search) {
+      whereClause.OR = [
+        { firstName: { contains: search, mode: "insensitive" } },
+        { lastName: { contains: search, mode: "insensitive" } },
+        { email: { contains: search, mode: "insensitive" } },
+        { company: { contains: search, mode: "insensitive" } },
+      ];
+    }
+
+    if (country) {
+      whereClause.country = { equals: country, mode: "insensitive" };
+    }
+
+    if (city) {
+      whereClause.city = { equals: city, mode: "insensitive" };
+    }
+
+    if (company) {
+      whereClause.company = { equals: company, mode: "insensitive" };
+    }
+
+    // Query DB
+    const [guests, total] = await Promise.all([
+      prisma.guest.findMany({
+        where: whereClause,
+        skip,
+        take: limit,
+        orderBy: { createdAt: "desc" }, // optional: sort by recent
+      }),
+      prisma.guest.count({ where: whereClause }),
+    ]);
+
+    return NextResponse.json(
+      {
+        data: guests,
+        pagination: {
+          total,
+          page,
+          limit,
+          totalPages: Math.ceil(total / limit),
+        },
+      },
+      { status: 200 }
     );
   } catch (error) {
     console.error("Error fetching guests:", error);
@@ -18,6 +75,8 @@ export async function GET(req: Request) {
     );
   }
 }
+
+ 
 
 export async function POST(req: Request) {
   try {
@@ -61,7 +120,7 @@ export async function POST(req: Request) {
       purpose_conference: purpose_conference,
       purpose_group: purpose_group,
       purpose_business: purpose_business,
-      paymentMethod: paymentMethod,
+      payment: paymentMethod,
       signature: signature
     }
 

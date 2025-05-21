@@ -10,9 +10,10 @@ export const fetchGuests = (options={}) => async (dispatch) => {
 } 
 
 export const fetchGuest = (id:any,options = {}) => async (dispatch) => { 
-    // const userList = await guest.get(id, options); 
+    const userList = await guests.getDetails(id, options); 
+    console.log('-----userList--------', userList)
     dispatch ({
         type: ActionTypes.SET_SELECTED_GUESTS,
-        // payload: userList?.data?.users
+        payload: userList?.data
     }) 
 }
