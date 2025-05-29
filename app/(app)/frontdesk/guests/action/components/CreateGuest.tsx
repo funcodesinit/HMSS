@@ -1,25 +1,34 @@
 'use client'
+
+import React, { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import { useDispatch, useSelector } from 'react-redux'
+import { Formik } from 'formik'
+import * as Yup from 'yup'
+
+import { RootState } from '@/store'
+import { fetchGuest } from '@/store/actions/userActions'
+
 import FormikInput from '@/components/app/FormikField'
 import { Button } from '@/components/button'
 import { Checkbox, CheckboxField, CheckboxGroup } from '@/components/checkbox'
-import { Combobox, ComboboxLabel, ComboboxOption } from '@/components/combobox'
 import { Divider } from '@/components/divider'
-import { Description, Field, Fieldset, Label, Legend } from '@/components/fieldset'
-import { Heading, Subheading } from '@/components/heading'
+import { Field, Fieldset, Label, Legend } from '@/components/fieldset'
+import { Heading } from '@/components/heading'
 import { Text } from '@/components/text'
-import { Formik } from 'formik'
-import * as Yup from 'yup';
-import { useRouter } from 'next/navigation'
-
-import React, { useState } from 'react'
 import { Select } from '@/components/select'
+import LoadingComp from '../../../Loading'
+import { ChevronLeftIcon } from '@heroicons/react/20/solid'
+import Link from 'next/link'
 
+interface Props {
+    id?: string; // optional, for edit mode
+}
 
-export default function CreateGuest() {
-
+export default function CreateGuest({ id }: Props) {
     const router = useRouter();
-    const [error, setError] = useState<string | null>(null)
-    const [loading, setLoading] = useState(false)
+    const dispatch = useDispatch();
+    const [loading, setLoading] = useState(false);
 
     const handleSubmit = (values) => {
         //   create guest 
@@ -64,23 +73,24 @@ export default function CreateGuest() {
 
     return (
         <Formik
+            enableReinitialize
             initialValues={{
-                firstName: '',
-                lastName: '',
-                email: '',
-                phoneNumber: '',
-                company: '',
-                address: '',
-                idNo: '',
-                city: '',
-                province: '',
-                country: '',
-                purpose_tourist: false,
-                purpose_conference: false,
-                purpose_group: false,
-                purpose_business: false,
-                paymentMethod: 'CASH',
-                signature: '',
+                firstName: guest?.firstName || '',
+                lastName: guest?.lastName || '',
+                email: guest?.email || '',
+                phoneNumber: guest?.phoneNumber || '',
+                company: guest?.company || '',
+                address: guest?.address || '',
+                idNo: guest?.idNo || '',
+                city: guest?.city || '',
+                province: guest?.province || '',
+                country: guest?.country || '',
+                purpose_tourist: guest?.purpose_tourist || false,
+                purpose_conference: guest?.purpose_conference || false,
+                purpose_group: guest?.purpose_group || false,
+                purpose_business: guest?.purpose_business || false,
+                paymentMethod: guest?.paymentMethod || 'CASH',
+                signature: guest?.signature || '',
             }}
 
             validationSchema={Yup.object({
@@ -101,16 +111,18 @@ export default function CreateGuest() {
                 paymentMethod: Yup.string().required('Payment method is required'),
                 signature: Yup.string().required('Signature is required'),
             })}
-
-
             onSubmit={handleSubmit}
-
         >
             {({ handleSubmit, isSubmitting, errors }) => (
+                <form onSubmit={handleSubmit} className="mx-auto max-w-4xl">
+                    <Heading>{isEditMode ? 'Edit Guest' : 'Create Guest'}</Heading>
+                    <div className="max-lg:hidden">
+                        <Link href="/frontdesk/guests" className="inline-flex items-center gap-2 text-sm/6 text-zinc-500 dark:text-zinc-400">
+                            <ChevronLeftIcon className="size-4 fill-zinc-400 dark:fill-zinc-500" />
+                            Guests list
+                        </Link>
+                    </div>
 
-
-                <form method="post" onSubmit={handleSubmit} className="mx-auto max-w-4xl">
-                    <Heading>Create Guest</Heading>
                     <Divider className="my-5 mt-6" />
                     
                     {/* list all the errors here */}
@@ -166,22 +178,21 @@ export default function CreateGuest() {
                                     <Label>Tourism</Label>
                                 </CheckboxField>
                                 <CheckboxField>
-                                    <Checkbox name="purpose_conference" value="allow_embedding" />
+                                    <Checkbox name="purpose_conference" />
                                     <Label>Conference</Label>
                                 </CheckboxField>
                                 <CheckboxField>
-                                    <Checkbox name="purpose_group" value="allow_embedding" />
+                                    <Checkbox name="purpose_group" />
                                     <Label>Group</Label>
                                 </CheckboxField>
                                 <CheckboxField>
-                                    <Checkbox name="purpose_business" value="allow_embedding" />
+                                    <Checkbox name="purpose_business" />
                                     <Label>Business</Label>
                                 </CheckboxField>
-
-
                             </CheckboxGroup>
                         </Fieldset>
-                        <div className='space-y-6'>
+
+                        <div className="space-y-6">
                             <Field>
                                 <Label>Project status</Label>
                                 <Select name="status">
@@ -197,9 +208,7 @@ export default function CreateGuest() {
                     <Divider className="my-5" soft />
 
                     <div className="flex justify-end gap-4">
-                        <Button type="reset" plain>
-                            Reset
-                        </Button>
+                        <Button type="reset" plain>Reset</Button>
                         <Button type="submit" disabled={isSubmitting || loading}>
                             {loading ? "Loading..." : "Submit"}
                         </Button>

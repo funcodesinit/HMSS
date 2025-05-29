@@ -3,10 +3,57 @@ import { prisma } from "@/lib/prisma";
 
 
 
-export async function GET(req: Request) {
+export async function GET(req: NextRequest) {
   try {
+    const { searchParams } = new URL(req.url);
 
-    const guests = await prisma.guest.findMany();
+    // Pagination params
+    const page = parseInt(searchParams.get("page") || "1");
+    const limit = parseInt(searchParams.get("limit") || "10");
+    const skip = (page - 1) * limit;
+
+    // Search query
+    const search = searchParams.get("search")?.toLowerCase() || "";
+
+    // Filters
+    const country = searchParams.get("country");
+    const city = searchParams.get("city");
+    const company = searchParams.get("company");
+
+    // Build dynamic where clause
+    const whereClause: any = {};
+
+    if (search) {
+      whereClause.OR = [
+        { firstName: { contains: search, mode: "insensitive" } },
+        { lastName: { contains: search, mode: "insensitive" } },
+        { email: { contains: search, mode: "insensitive" } },
+        { company: { contains: search, mode: "insensitive" } },
+      ];
+    }
+
+    if (country) {
+      whereClause.country = { equals: country, mode: "insensitive" };
+    }
+
+    if (city) {
+      whereClause.city = { equals: city, mode: "insensitive" };
+    }
+
+    if (company) {
+      whereClause.company = { equals: company, mode: "insensitive" };
+    }
+
+    // Query DB
+    const [guests, total] = await Promise.all([
+      prisma.guest.findMany({
+        where: whereClause,
+        skip,
+        take: limit,
+        orderBy: { createdAt: "desc" }, // optional: sort by recent
+      }),
+      prisma.guest.count({ where: whereClause }),
+    ]);
 
     return NextResponse.json(guests, { status: 200 }
     );
@@ -19,6 +66,13 @@ export async function GET(req: Request) {
   }
 }
 
+ 
+
+<<<<<<< HEAD
+ 
+
+=======
+>>>>>>> 9caa6e2523b37c39dbada7f3aa7fdcd1ee386a6f
 export async function POST(req: Request) {
   try {
     const body = await req.json();

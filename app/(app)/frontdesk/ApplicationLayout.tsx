@@ -1,5 +1,8 @@
 'use client'
+<<<<<<< HEAD
+=======
 
+>>>>>>> 9caa6e2523b37c39dbada7f3aa7fdcd1ee386a6f
 import { Avatar } from '@/components/avatar'
 import {
   Dropdown,
@@ -118,6 +121,24 @@ export default function ApplicationLayout({ children }: { children: React.ReactN
                 <UserIcon />
                 <SidebarLabel>Guests</SidebarLabel>
               </SidebarItem>
+<<<<<<< HEAD
+              
+              <SidebarItem href="/frontdesk/rooms" current={pathname === '/frontdesk/rooms'}>
+                <TicketIcon />
+                <SidebarLabel>Rooms</SidebarLabel>
+              </SidebarItem>
+
+              <SidebarItem href="/frontdesk/reservations" current={pathname === '/frontdesk/reservations'}>
+                <ClipboardDocumentIcon   />
+                <SidebarLabel>Reservations</SidebarLabel>
+              </SidebarItem>
+              
+              <SidebarItem href="/frontdesk/sales" current={pathname ==='/frontdesk/sales'}>
+                <InboxStackIcon />
+                <SidebarLabel>POS Transactions</SidebarLabel>
+              </SidebarItem>
+              <SidebarItem href="/frontdesk/billing" current={pathname === '/frontdesk/billing'}>
+=======
               <SidebarItem href="/frontdesk/products" current={pathname === '/frontdesk/products'}>
                 <ClipboardDocumentIcon   />
                 <SidebarLabel>Reservation</SidebarLabel>
@@ -131,6 +152,7 @@ export default function ApplicationLayout({ children }: { children: React.ReactN
                 <SidebarLabel>POS Transactions</SidebarLabel>
               </SidebarItem>
               <SidebarItem href="/frontdesk/payments" current={pathname === '/frontdesk/payments'}>
+>>>>>>> 9caa6e2523b37c39dbada7f3aa7fdcd1ee386a6f
                 <CreditCardIcon />
                 <SidebarLabel>Billing</SidebarLabel>
               </SidebarItem>
