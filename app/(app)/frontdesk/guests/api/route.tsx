@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
+<<<<<<< HEAD
  
 
 export async function GET(req: NextRequest) {
@@ -66,6 +67,16 @@ export async function GET(req: NextRequest) {
         },
       },
       { status: 200 }
+=======
+
+
+export async function GET(req: Request) {
+  try {
+
+    const guests = await prisma.guest.findMany();
+
+    return NextResponse.json(guests, { status: 200 }
+>>>>>>> 9caa6e2523b37c39dbada7f3aa7fdcd1ee386a6f
     );
   } catch (error) {
     console.error("Error fetching guests:", error);
@@ -76,8 +87,11 @@ export async function GET(req: NextRequest) {
   }
 }
 
+<<<<<<< HEAD
  
 
+=======
+>>>>>>> 9caa6e2523b37c39dbada7f3aa7fdcd1ee386a6f
 export async function POST(req: Request) {
   try {
     const body = await req.json();
@@ -120,7 +134,11 @@ export async function POST(req: Request) {
       purpose_conference: purpose_conference,
       purpose_group: purpose_group,
       purpose_business: purpose_business,
+<<<<<<< HEAD
       payment: paymentMethod,
+=======
+      paymentMethod: paymentMethod,
+>>>>>>> 9caa6e2523b37c39dbada7f3aa7fdcd1ee386a6f
       signature: signature
     }
 

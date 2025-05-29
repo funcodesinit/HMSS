@@ -1,6 +1,7 @@
 export const ActionTypes = {
     SET_FETCH_ERROR: "SET_FETCH_ERROR",
 
+<<<<<<< HEAD
     SET_USERS: "SET_USERS",
     SET_SELECTED_USER: "SET_SELECTED_USER",
     
@@ -19,4 +20,11 @@ export const ActionTypes = {
 
     SET_BILLS: "SET_BILLS",
     SET_SELECTED_BILL: "SET_SELECTED_BILL",
+=======
+    SET_USERS: "SET_USERS", 
+    SET_GUESTS: "SET_GUESTS",
+    SET_SELECTED_USER: "SET_SELECTED_USER", 
+    SET_SELECTED_GUESTS: "SET_SELECTED_GUESTS",
+  
+>>>>>>> 9caa6e2523b37c39dbada7f3aa7fdcd1ee386a6f
 }
