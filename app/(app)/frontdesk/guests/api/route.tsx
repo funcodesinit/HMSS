@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
-<<<<<<< HEAD
- 
+
 
 export async function GET(req: NextRequest) {
   try {
@@ -56,27 +55,7 @@ export async function GET(req: NextRequest) {
       prisma.guest.count({ where: whereClause }),
     ]);
 
-    return NextResponse.json(
-      {
-        data: guests,
-        pagination: {
-          total,
-          page,
-          limit,
-          totalPages: Math.ceil(total / limit),
-        },
-      },
-      { status: 200 }
-=======
-
-
-export async function GET(req: Request) {
-  try {
-
-    const guests = await prisma.guest.findMany();
-
     return NextResponse.json(guests, { status: 200 }
->>>>>>> 9caa6e2523b37c39dbada7f3aa7fdcd1ee386a6f
     );
   } catch (error) {
     console.error("Error fetching guests:", error);
@@ -86,6 +65,8 @@ export async function GET(req: Request) {
     );
   }
 }
+
+ 
 
 <<<<<<< HEAD
  
@@ -134,11 +115,7 @@ export async function POST(req: Request) {
       purpose_conference: purpose_conference,
       purpose_group: purpose_group,
       purpose_business: purpose_business,
-<<<<<<< HEAD
-      payment: paymentMethod,
-=======
       paymentMethod: paymentMethod,
->>>>>>> 9caa6e2523b37c39dbada7f3aa7fdcd1ee386a6f
       signature: signature
     }
 
