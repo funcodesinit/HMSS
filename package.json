@@ -1,0 +1,39 @@
+{
+  "name": "rustiek_core",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev ",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "prisma": {
+    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
+  },
+  "dependencies": {
+    "@auth/prisma-adapter": "^2.9.1",
+    "@headlessui/react": "^2.2.3",
+    "@heroicons/react": "^2.2.0",
+    "@prisma/client": "^6.7.0",
+    "@reduxjs/toolkit": "^2.8.2",
+    "apisauce": "^3.1.1",
+    "bcryptjs": "^3.0.2",
+    "formik": "^2.4.6",
+    "motion": "^12.12.1",
+    "next": "15.3.2",
+    "next-auth": "^5.0.0-beta.28",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-redux": "^9.2.0",
+    "yup": "^1.6.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}
