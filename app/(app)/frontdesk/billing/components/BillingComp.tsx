@@ -152,7 +152,7 @@ export default function BillingComp() {
                                     </Field>
 
                                     <Divider className="my-4" />
-                                    <FormikInput label="Guest" name="guestId" displayValue={} value={values.guestId} placeholder="Optional description" />
+                                    <FormikInput label="Guest" name="guestId" displayValue={''} value={values.guestId} placeholder="Optional description" />
 
 
                                     <Divider className="my-4" />
