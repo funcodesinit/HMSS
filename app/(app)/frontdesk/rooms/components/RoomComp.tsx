@@ -1,6 +1,6 @@
 'use client'
 import { Button } from '@/components/button'
-import { Heading } from '@/components/heading'
+import { Heading, } from '@/components/heading'
 import { Dialog, DialogActions, DialogBody, DialogDescription, DialogTitle } from '@/components/dialog'
 
 
@@ -15,9 +15,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { fetchRooms } from '@/store/actions/roomActions'
 import { RootState } from '@/store'
 import LoadingComp from '../../Loading'
-import StatusBadge from './StatusBadge'
-import { PencilSquareIcon } from '@heroicons/react/24/outline'
 import { Input } from '@/components/input'
+import ListingComp from './Listing'
 
  
  
@@ -210,7 +209,7 @@ export default function RoomComp() {
           onChange={(e) => setSearch(e.target.value)}
         />
 
-        <Select
+        {/* <Select
           value={filterType}
           onChange={(e) => setFilterType(e.target.value)}
         >
@@ -219,7 +218,7 @@ export default function RoomComp() {
           <option value="A_FRAMES">A Frames</option>
           <option value="FLOATING">Floating</option>
           <option value="EXECUTIVE">Executive</option>
-        </Select>
+        </Select> */}
 
         <Select
           value={filterStatus}
@@ -232,53 +231,12 @@ export default function RoomComp() {
           <option value="MAINTENANCE">Maintenance</option>
         </Select>
       </div>
-
-      <ul role="list" className="grid grid-cols-1 gap-x-6 mt-10 gap-y-8 lg:grid-cols-3 xl:gap-x-8">
-        {rooms?.error && (
-          <div className="mb-4 rounded-md border border-red-300 bg-red-50 p-4 text-sm text-red-700">
-            {rooms?.error}
-          </div>
-        )}
-        {rooms?.data && !rooms?.data?.length && (
-          <div className="mb-4 rounded-md border border-red-300 bg-red-50 p-4 text-sm text-red-700">
-            No rooms found.
-          </div>
-        )}
-        {rooms?.data?.map((client) => (
-          <li key={client.id} className="overflow-hidden rounded-xl border border-gray-200">
-            <div className="flex items-center  justify-between gap-x-4 border-b border-gray-900/5 bg-gray-50 p-6">
-              <div className="text-sm/6 font-bold text-gray-900 ">Room No. {client.number}</div>
-              <span onClick={() => {
-                setRoom(client);
-                setIsOpen(true)
-              }}>
-                <PencilSquareIcon className='size-5' />
-              </span>
-
-            </div>
-            <dl className="-my-3 divide-y divide-gray-100 px-6 py-4 text-sm/6">
-              <div className="flex justify-between gap-x-4 py-3">
-                <dt className="text-gray-500">Price/Night</dt>
-                <dd className="text-gray-700">
-                  <div className="font-medium text-gray-900">BWP {client.pricePerNight}</div>
-                </dd> 
-              </div>
-              <div className="flex justify-between gap-x-4 py-3">
-                <dt className="text-gray-500">Room type</dt>
-                <dd className="text-gray-700">
-                  <div className="font-medium text-gray-900">{client.type}</div>
-                </dd>
-              </div>
-              <div className="flex justify-between gap-x-4 py-3">
-                <dt className="text-gray-500">Status</dt>
-                <dd className="flex items-start gap-x-2">
-                  <StatusBadge status={client.status} />
-                </dd>
-              </div>
-            </dl>
-          </li>
-        ))}
-      </ul>
+  
+      <ListingComp title={'Standard'} rooms={rooms} setRoom={setRoom} setIsOpen={setIsOpen} />
+      <ListingComp title={'A_FRAMES'} rooms={rooms} setRoom={setRoom} setIsOpen={setIsOpen} />
+      <ListingComp title={'Floating'} rooms={rooms} setRoom={setRoom} setIsOpen={setIsOpen} />
+      <ListingComp title={'Executive'} rooms={rooms} setRoom={setRoom} setIsOpen={setIsOpen} />
+    
     </>
   )
 }

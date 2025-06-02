@@ -1,3 +1,4 @@
+// Created by kev, 2023-10-05 12:00:00
 'use client'
 
 import React, { useState, useEffect } from 'react'
@@ -14,7 +15,7 @@ import { Button } from '@/components/button'
 import { Checkbox, CheckboxField, CheckboxGroup } from '@/components/checkbox'
 import { Divider } from '@/components/divider'
 import { Field, Fieldset, Label, Legend } from '@/components/fieldset'
-import { Heading } from '@/components/heading'
+import { Heading, Subheading } from '@/components/heading'
 import { Text } from '@/components/text'
 import { Select } from '@/components/select'
 import LoadingComp from '../../../Loading'
@@ -30,11 +31,20 @@ export default function CreateGuest({ id }: Props) {
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(false);
 
-    const handleSubmit = (values) => {
-        //   create guest 
-        const Method = 'POST'
-        const url = process.env.NEXT_PUBLIC_FRONTDESK_GUEST_API || 'api'
+    const guest = useSelector((state: RootState) => state.user.selected_guest);
 
+    // Fetch only in edit mode
+    useEffect(() => {
+        dispatch(fetchGuest(id));
+    }, [id]);
+
+    const isEditMode = !!id;
+
+    const handleSubmit = async (values: any) => {
+        setLoading(true);
+
+        const method = isEditMode ? 'PATCH' : 'POST';
+        const url = isEditMode ? `${id}/api` : 'api';
 
         const body = {
             firstName: values.firstName,
@@ -53,23 +63,26 @@ export default function CreateGuest({ id }: Props) {
             purpose_business: values.purpose_business,
             paymentMethod: values.paymentMethod,
             signature: values.signature
-        }
-        fetch(url, {
-            method: Method,
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(body),
-        }).then((response) => response.json())
-            .then((data) => {
-                console.log('Success:', data);
-                router.push('/frontdesk/guests');
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-            });
+        };
 
-    }
+        try {
+            const response = await fetch(url, {
+                method,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(body),
+            });
+            const data = await response.json();
+            router.push('/frontdesk/guests');
+        } catch (error) {
+            console.error('Error:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    if (loading && isEditMode) return <LoadingComp />;
 
     return (
         <Formik
@@ -92,7 +105,6 @@ export default function CreateGuest({ id }: Props) {
                 paymentMethod: guest?.paymentMethod || 'CASH',
                 signature: guest?.signature || '',
             }}
-
             validationSchema={Yup.object({
                 firstName: Yup.string().required("First name is required."),
                 lastName: Yup.string().required("Last name is required."),
@@ -104,16 +116,12 @@ export default function CreateGuest({ id }: Props) {
                 city: Yup.string().required('City is required'),
                 province: Yup.string().required('Province is required'),
                 country: Yup.string().required('Country is required'),
-                purpose_tourist: Yup.boolean(),
-                purpose_conference: Yup.boolean(),
-                purpose_group: Yup.boolean(),
-                purpose_business: Yup.boolean(),
                 paymentMethod: Yup.string().required('Payment method is required'),
                 signature: Yup.string().required('Signature is required'),
             })}
             onSubmit={handleSubmit}
         >
-            {({ handleSubmit, isSubmitting, errors }) => (
+            {({ handleSubmit, isSubmitting, errors, handleChange, values }) => (
                 <form onSubmit={handleSubmit} className="mx-auto max-w-4xl">
                     <Heading>{isEditMode ? 'Edit Guest' : 'Create Guest'}</Heading>
                     <div className="max-lg:hidden">
@@ -124,8 +132,7 @@ export default function CreateGuest({ id }: Props) {
                     </div>
 
                     <Divider className="my-5 mt-6" />
-                    
-                    {/* list all the errors here */}
+
                     {Object.keys(errors).length > 0 && (
                         <div className="mb-4 rounded-md border border-red-300 bg-red-50 p-4">
                             <ul className="list-disc list-inside text-sm text-red-700">
@@ -136,87 +143,127 @@ export default function CreateGuest({ id }: Props) {
                         </div>
                     )}
 
+                    {/* Guest Personal Info */}
                     <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
-                        <FormikInput label={'first name'} name="firstName" type='text' />
-                        <FormikInput label={'last name'} name="lastName" type='text' />
+                        <FormikInput label="First Name" name="firstName" type="text" />
+                        <FormikInput label="Last Name" name="lastName" type="text" />
                     </section>
 
                     <Divider className="my-5" soft />
 
                     <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
-                        <FormikInput label={'Email'} name="email" type='email' />
-                        <FormikInput label={'Phone Number'} name="phoneNumber" type='text' />
+                        <FormikInput label="Email" name="email" type="email" />
+                        <FormikInput label="Phone Number" name="phoneNumber" type="text" />
                     </section>
 
                     <Divider className="my-5" soft />
 
                     <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
-                        <FormikInput label={'company'} name="company" type='text' />
-                        <FormikInput label={'address'} name="address" type='text' />
+                        <FormikInput label="Company" name="company" type="text" />
+                        <FormikInput label="Address" name="address" type="text" />
                     </section>
 
                     <Divider className="my-5" soft />
 
                     <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
-                        <FormikInput label={'Botswana Passport'} name="idNo" type='text' />
-                        <FormikInput label={'city'} name="city" type='text' />
-                        <FormikInput label={'province'} name="province" type='text' />
-                        <FormikInput label={'country'} name="country" type='text' />
+                        <FormikInput label="ID No" name="idNo" type="text" />
+                        <FormikInput label="City" name="city" type="text" />
+                        <FormikInput label="Province" name="province" type="text" />
+                        <FormikInput label="Country" name="country" type="text" />
                     </section>
 
                     <Divider className="my-5" soft />
 
-                    <Divider className="my-5" soft />
-
+                    {/* Purpose & Payment */}
                     <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
                         <Fieldset>
                             <Legend>Purpose</Legend>
                             <Text>Purpose of guest visit.</Text>
                             <CheckboxGroup>
-                                <CheckboxField>
-                                    <Checkbox name="purpose_tourist" value="show_on_events_page" defaultChecked />
-                                    <Label>Tourism</Label>
-                                </CheckboxField>
-                                <CheckboxField>
-                                    <Checkbox name="purpose_conference" />
-                                    <Label>Conference</Label>
-                                </CheckboxField>
-                                <CheckboxField>
-                                    <Checkbox name="purpose_group" />
-                                    <Label>Group</Label>
-                                </CheckboxField>
-                                <CheckboxField>
-                                    <Checkbox name="purpose_business" />
-                                    <Label>Business</Label>
-                                </CheckboxField>
+                                <Field className='gap-2 flex items-center'>
+                                    <input
+                                        id="purpose_tourist"
+                                        name="purpose_tourist"
+                                        type="checkbox"
+                                        onChange={handleChange}
+                                        checked={values.purpose_tourist}
+                                        className="form-checkbox"
+                                    />
+                                    <Label htmlFor="purpose_tourist">Tourism</Label>
+                                </Field>
+                                <Field className='gap-2 flex items-center'>
+                                    <input
+                                        id="purpose_conference"
+                                        name="purpose_conference"
+                                        type="checkbox"
+                                        onChange={handleChange}
+                                        checked={values.purpose_conference}
+                                        className="form-checkbox"
+                                    />
+                                    <Label htmlFor="purpose_conference">Conference</Label>
+                                </Field>
+                                <Field className='gap-2 flex items-center'>
+                                    <input
+                                        id="purpose_group"
+                                        name="purpose_group"
+                                        type="checkbox"
+                                        onChange={handleChange}
+                                        checked={values.purpose_group}
+                                        className="form-checkbox"
+                                    />
+                                    <Label htmlFor="purpose_group">Group</Label>
+                                </Field>
+                                <Field className='gap-2 flex items-center'>
+                                    <input
+                                        id="purpose_business"
+                                        name="purpose_business"
+                                        type="checkbox"
+                                        onChange={handleChange}
+                                        checked={values.purpose_business}
+                                        className="form-checkbox"
+                                    />
+                                    <Label htmlFor="purpose_business">Business</Label>
+                                </Field> 
                             </CheckboxGroup>
                         </Fieldset>
 
                         <div className="space-y-6">
                             <Field>
-                                <Label>Project status</Label>
-                                <Select name="status">
+                                <Label>Payment Method</Label>
+                                <Select name="paymentMethod">
                                     <option value="CASH">Cash</option>
                                     <option value="COMPANY">Company</option>
                                     <option value="CARD">Card</option>
                                 </Select>
                             </Field>
-                            <FormikInput label={'signature'} name="signature" type='text' />
+                            <FormikInput label="Signature" name="signature" type="text" />
                         </div>
                     </section>
 
                     <Divider className="my-5" soft />
 
+                    <div>
+                        <Subheading>Terms and Conditions</Subheading>
+                        <ul>
+                            <li>Check in is from 1400 hrs</li>
+                            <li>Check out is at 1100 hrs</li>
+                            <li>Late check out is only permitted with management consent</li>
+                            <li>Guests may not leave without full payment of services rendered unless permitted by management</li>
+                            <li>Pets are not allowed on the premises</li>
+                            <li>In-house guest may only cancel next day booking the night prior to checking out</li>
+                            <li>No in-room parties allowed</li> 
+                        </ul> 
+                    </div>
+
+                    {/* Actions */}
                     <div className="flex justify-end gap-4">
                         <Button type="reset" plain>Reset</Button>
                         <Button type="submit" disabled={isSubmitting || loading}>
-                            {loading ? "Loading..." : "Submit"}
+                            {loading ? 'Submitting...' : isEditMode ? 'Update Guest' : 'Create Guest'}
                         </Button>
                     </div>
                 </form>
             )}
-
         </Formik>
-
     )
 }

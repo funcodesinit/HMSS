@@ -1,8 +1,4 @@
 'use client'
-<<<<<<< HEAD
-=======
-
->>>>>>> 9caa6e2523b37c39dbada7f3aa7fdcd1ee386a6f
 import { Avatar } from '@/components/avatar'
 import {
   Dropdown,
@@ -45,6 +41,7 @@ import {
   MagnifyingGlassIcon,
   MegaphoneIcon,
   QuestionMarkCircleIcon,
+  ShoppingCartIcon,
   SparklesIcon,
   Square2StackIcon,
   TicketIcon,
@@ -103,12 +100,12 @@ export default function ApplicationLayout({ children }: { children: React.ReactN
       sidebar={
         <Sidebar>
           <SidebarHeader>
-            <Image src="/logo.png" alt='logo' width={200} height="100" className='mb-3' />
+            <Image src="/logo.png"  alt='logo' width={100} height="100" className='mb-3 tint-red-900' />
             <SidebarSection className="max-lg:hidden">
-              <SidebarItem href="/search">
+              {/* <SidebarItem href="/search">
                 <MagnifyingGlassIcon />
                 <SidebarLabel>Search</SidebarLabel>
-              </SidebarItem>
+              </SidebarItem> */}
               <SidebarItem href="/frontdesk/staff" current={pathname === '/frontdesk/staff'}>
                 <InboxIcon />
                 <SidebarLabel>Staff Users</SidebarLabel>
@@ -121,7 +118,6 @@ export default function ApplicationLayout({ children }: { children: React.ReactN
                 <UserIcon />
                 <SidebarLabel>Guests</SidebarLabel>
               </SidebarItem>
-<<<<<<< HEAD
               
               <SidebarItem href="/frontdesk/rooms" current={pathname === '/frontdesk/rooms'}>
                 <TicketIcon />
@@ -132,27 +128,17 @@ export default function ApplicationLayout({ children }: { children: React.ReactN
                 <ClipboardDocumentIcon   />
                 <SidebarLabel>Reservations</SidebarLabel>
               </SidebarItem>
+
+              <SidebarItem href="/frontdesk/reservations" current={pathname === '/frontdesk/reservations'}>
+                <ShoppingCartIcon  />
+                <SidebarLabel>Products</SidebarLabel>
+              </SidebarItem>
               
               <SidebarItem href="/frontdesk/sales" current={pathname ==='/frontdesk/sales'}>
                 <InboxStackIcon />
                 <SidebarLabel>POS Transactions</SidebarLabel>
               </SidebarItem>
               <SidebarItem href="/frontdesk/billing" current={pathname === '/frontdesk/billing'}>
-=======
-              <SidebarItem href="/frontdesk/products" current={pathname === '/frontdesk/products'}>
-                <ClipboardDocumentIcon   />
-                <SidebarLabel>Reservation</SidebarLabel>
-              </SidebarItem>
-              <SidebarItem href="/frontdesk/orders" current={pathname === '/frontdesk/orders'}>
-                <TicketIcon />
-                <SidebarLabel>Rooms</SidebarLabel>
-              </SidebarItem>
-              <SidebarItem href="/frontdesk/stock" current={pathname ==='/frontdesk/stock'}>
-                <InboxStackIcon />
-                <SidebarLabel>POS Transactions</SidebarLabel>
-              </SidebarItem>
-              <SidebarItem href="/frontdesk/payments" current={pathname === '/frontdesk/payments'}>
->>>>>>> 9caa6e2523b37c39dbada7f3aa7fdcd1ee386a6f
                 <CreditCardIcon />
                 <SidebarLabel>Billing</SidebarLabel>
               </SidebarItem>

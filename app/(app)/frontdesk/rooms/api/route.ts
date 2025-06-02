@@ -100,86 +100,7 @@ export async function GET(req: NextRequest) {
     );
   }
 }
-
-
-  // export async function GET(req: NextRequest) {
-  //   try {
-  //     const { searchParams } = new URL(req.url);
-
-  //     const page = parseInt(searchParams.get("page") || "1");
-  //     const limit = parseInt(searchParams.get("limit") || "20");
-  //     const skip = (page - 1) * limit;
-
-  //     const search = searchParams.get("search")?.toLowerCase() || "";
-
-  //     const number = searchParams.get("number");
-  //     const type = searchParams.get("type");
-  //     const pricePerNight = searchParams.get("pricePerNight");
-  //     const status = searchParams.get("status");
-
-  //     const whereClause: any = {};
-
-  //     if (search) {
-  //       whereClause.OR = [
-  //         { number: { contains: search, mode: "insensitive" } },
-  //         { status: { contains: search, mode: "insensitive" } },
-  //         { type: { contains: search, mode: "insensitive" } },
-  //       ];
-
-  //       const numericSearch = parseFloat(search);
-  //       if (!isNaN(numericSearch)) {
-  //         whereClause.OR.push({ pricePerNight: numericSearch });
-  //       }
-  //     }
-
-  //     if (number) {
-  //       whereClause.number = { equals: number };
-  //     }
-
-  //     if (pricePerNight) {
-  //       whereClause.pricePerNight = { equals: parseFloat(pricePerNight) };
-  //     }
-
-
-  //     if (status) {
-  //       whereClause.status = { equals: status as RoomStatus };
-  //     }
-  //     if (type) {
-  //       whereClause.type = { equals: type as RoomType };
-  //     }
-
-  //     const [rooms, total] = await Promise.all([
-  //       prisma.room.findMany({
-  //         where: whereClause,
-  //         skip,
-  //         take: limit,
-  //         orderBy: { id: "desc" },
-  //       }),
-  //       prisma.room.count({ where: whereClause }),
-  //     ]);
-
-  //     return NextResponse.json(
-  //       {
-  //         data: rooms,
-  //         pagination: {
-  //           total,
-  //           page,
-  //           limit,
-  //           totalPages: Math.ceil(total / limit),
-  //         },
-  //       },
-  //       { status: 200 }
-  //     );
-  //   } catch (error) {
-  //     console.error("Error fetching rooms:", error);
-  //     return NextResponse.json(
-  //       { error: "Failed to fetch rooms" },
-  //       { status: 500 }
-  //     );
-  //   }
-  // }
-
-
+ 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
@@ -219,8 +140,7 @@ export async function POST(req: Request) {
   }
 
 
-}
-
+} 
 
 export async function PATCH(req: Request) {
   try {
