@@ -1,5 +1,3 @@
- 
- 
 import type { Metadata } from 'next'
 import CustomerListComp from './components/GuestList'
 
@@ -10,6 +8,5 @@ export const metadata: Metadata = {
 
 export default async function Customers() {
   return <CustomerListComp  />
-    
 }
  

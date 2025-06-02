@@ -1,5 +1,5 @@
 'use client'
-import {  Subheading } from '@/components/heading'
+import { Subheading } from '@/components/heading'
 import { Select } from '@/components/select'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/table'
 import { Button } from '@/components/button'
@@ -14,31 +14,24 @@ import { Divider } from '@/components/divider'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '@/store'
 import LoadingComp from '../../Loading'
-import { useSession } from 'next-auth/react'
-import { fetchPos } from '@/store/actions/paymentAction'
+import { fetchBills, fetchPos } from '@/store/actions/paymentAction'
 import { fetchReservations } from '@/store/actions/roomActions'
-import { Checkbox, CheckboxField } from '@/components/checkbox'
 
 export default function BillingComp() {
     const dispatch = useDispatch();
-    const { data: session, status } = useSession()
-
-    const user = session?.user;
-
-    //   let orders = await getRecentOrders() 
     const [isOpen, setIsOpen] = useState(false);
     const [loading, setLoading] = useState(true);
     const [bill, setBill] = useState(null);
 
     useEffect(() => {
-        dispatch(fetchPos()).then(() => setLoading(false));
-    }, [dispatch, ]);
+        dispatch(fetchBills()).then(() => setLoading(false));
+    }, [dispatch]);
 
     useEffect(() => {
         dispatch(fetchReservations())
     }, [dispatch])
 
- 
+
     const bills = useSelector((state: RootState) => state.payment.bills);
     const reservations = useSelector((state: RootState) => state.room.reservations);
 
@@ -55,14 +48,12 @@ export default function BillingComp() {
                     <Formik
                         initialValues={{
                             id: bill?.id || '',
-                            guestId: bill?.guestId || '',
                             reservationId: bill?.reservationId || '',
                             amount: bill?.amount || '',
                             paid: bill?.paid || false,
                         }}
                         validationSchema={
                             Yup.object({
-                                guestId: Yup.string().required("guest is required."),
                                 reservationId: Yup.string().required("reservation room is required."),
                                 amount: Yup.string().required("amount is required."),
                                 paid: Yup.boolean(),
@@ -70,10 +61,10 @@ export default function BillingComp() {
                         }
 
                         enableReinitialize={true}
-                        onSubmit={async (values, { setStatus }) => {
+                        onSubmit={async (values, { setStatus, resetForm }) => {
                             setLoading(true);
                             setStatus(null);
-                            const url = bill?.id ? `/frontdesk/sales/${bill?.id}/api` : '/frontdesk//sales/api';
+                            const url = bill?.id ? `/frontdesk/billing/${bill?.id}/api` : '/frontdesk/billing/api';
                             const method = bill?.id ? 'PUT' : 'POST';
                             try {
                                 const response = await fetch(url, {
@@ -82,10 +73,9 @@ export default function BillingComp() {
                                         'Content-Type': 'application/json',
                                     },
                                     body: JSON.stringify({
-                                        guestId: values.guestId,
                                         reservationId: values.reservationId,
                                         amount: parseFloat(values.amount),
-                                        paid: values.paid || '',
+                                        paid: values.paid,
                                     }),
                                 });
 
@@ -96,10 +86,10 @@ export default function BillingComp() {
                                     setStatus(errorMessage);
                                 } else {
                                     setIsOpen(false);
+                                    resetForm();
                                     // Optionally reset form state or refresh list
-                                    // dispatch(fetchPos()).then(() => {
-                                    //     dispatch(SetPosStats());
-                                    // });
+                                    dispatch(fetchBills());
+
                                 }
                             } catch (error) {
                                 console.error('Error creating POS item:', error);
@@ -117,8 +107,10 @@ export default function BillingComp() {
                             <form method="post" onSubmit={handleSubmit}>
                                 <DialogTitle> {bill?.id ? `Update Room No. ${bill.id}` : 'Add Pos Transaction'}</DialogTitle>
                                 <DialogDescription>
-                                    Fill in the form to  {bill?.id ? `update Room No. ${pos.id}` : 'create new room'}
+                                    Fill in the form to  {bill?.id ? `update Bill No. ${bill.id}` : 'create Bill'}
                                 </DialogDescription>
+
+
                                 <DialogBody>
 
                                     {status && (
@@ -140,35 +132,40 @@ export default function BillingComp() {
 
                                     <Field >
                                         <Label>Reservation</Label>
-                                        <Select name="guestId" onChange={handleChange} value={values.guestId}>
+                                        <Select name="reservationId" onChange={handleChange} value={values.reservationId}>
                                             {/* Replace these options with actual guests dynamically */}
                                             <option value="">Select Reservation</option>
                                             {reservations?.data?.map((g) => (
                                                 <option key={g.id} value={g.id}>
-                                                    reservation room {g.room.number }  
+                                                    Room {g.room.number} - {g.guest.firstName} {g.guest.lastName}
                                                 </option>
+
                                             ))}
                                         </Select>
                                     </Field>
-
                                     <Divider className="my-4" />
-                                    <FormikInput label="Guest" name="guestId" displayValue={''} value={values.guestId} placeholder="Optional description" />
+                                    <FormikInput label="Amount" name="amount" placeholder="Optional description" />
+                                    <Divider className="my-4" />
+                                    <Field className='gap-2 flex items-center'>
+                                        <Label htmlFor="paid">Paid</Label>
+                                        <input
+                                            id="paid"
+                                            name="paid"
+                                            type="checkbox"
+                                            onChange={handleChange}
+                                            checked={values.paid}
+                                            className="form-checkbox"
+                                        />
+                                    </Field>
 
 
-                                    <Divider className="my-4" />
-                                    <FormikInput label="Amount" name="itemDescription" placeholder="Optional description" />
-                                    <Divider className="my-4" />
-                                    <CheckboxField>
-                                        <Checkbox name="extraBed" />
-                                        <Label>Paid</Label>
-                                    </CheckboxField>
 
 
                                 </DialogBody>
                                 <DialogActions>
                                     <Button plain onClick={() => {
                                         setIsOpen(false);
-                                        setPostxn(null);
+                                        setBill(null);
                                     }}>
                                         Cancel
                                     </Button>
@@ -180,14 +177,14 @@ export default function BillingComp() {
                         )}
                     </Formik>
                 </Dialog>
-            </div> 
+            </div>
             <Table className="mt-4 [--gutter:--spacing(6)] lg:[--gutter:--spacing(10)]">
                 <TableHead>
                     <TableRow>
-                        <TableHeader>Transaction Id</TableHeader>
-                        <TableHeader>Purchase date</TableHeader>
+                        <TableHeader>Billinng Id</TableHeader>
+                        <TableHeader>room</TableHeader>
                         <TableHeader>Guest</TableHeader>
-                        <TableHeader>Room</TableHeader>
+                        <TableHeader>Paid</TableHeader>
                         <TableHeader className="text-right">Amount</TableHeader>
                     </TableRow>
                 </TableHead>
@@ -202,7 +199,8 @@ export default function BillingComp() {
                             </TableCell>
                         </TableRow>
                     )}
-                    {bills && !bills?.length && (
+                    {Array.isArray(bills) && bills.length === 0 && (
+
                         <TableRow  >
                             <TableCell colSpan={5} className="text-pink-500 flex items-center gap-2">
                                 <div className='text-sm text-red-700'>
@@ -212,16 +210,11 @@ export default function BillingComp() {
                         </TableRow>
                     )}
                     {bills?.map((order) => (
-                        <TableRow key={order.id} href={order.url} title={`Order #${order.id}`}>
-                            <TableCell>{order.id}</TableCell>
-                            <TableCell className="text-zinc-500">{order.createdAt}</TableCell>
-                            <TableCell>{order.guest.firstName} {order.guest.lastName}</TableCell>
-                            <TableCell>
-                                <div className="flex items-center gap-2">
-                                    {/* <Avatar src={order.event.thumbUrl} className="size-6" /> */}
-                                    <span>{order.itemName}</span>
-                                </div>
-                            </TableCell>
+                        <TableRow key={order?.id} title={`Order #${order.id}`}>
+                            <TableCell>{order?.id}</TableCell>
+                            <TableCell className="text-zinc-500">{order?.reservation?.room?.number}</TableCell>
+                            <TableCell>{order?.reservation?.guest?.firstName} {order?.reservation?.guest?.lastName}</TableCell>
+                            <TableCell>{order.paid ? 'paid' : 'not paid'}</TableCell>
                             <TableCell className="text-right">BPW {order.amount}</TableCell>
                         </TableRow>
                     ))}

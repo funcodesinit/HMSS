@@ -5,9 +5,7 @@ import { ActionTypes } from "../constants/action-types"
 import billing from "@/app/api/apisauce/billing"
 
 export const fetchPos = (options={}) => async (dispatch) => {
-    
     const user = await payments.list(options)
-
     dispatch({
         type: ActionTypes.SET_POS,
         payload: user?.data
@@ -18,7 +16,6 @@ export const fetchPos = (options={}) => async (dispatch) => {
 
 export const SetPosStats = () => (dispatch, getState) => {
     const posList = getState().payment.pos;
-
     if (!posList || posList.length === 0) {
       dispatch({
         type: ActionTypes.SET_POS_STATS,

@@ -19,3 +19,12 @@ export const fetchReservations = (options={}) => async (dispatch) => {
         payload: user?.data
     }) 
 } 
+
+
+export const fetchReservation = (id:any, options={}) => async (dispatch) => {
+    const res = await reservations.getDetails(id,options)
+    dispatch({
+        type: ActionTypes.SET_RESERVATIONS,
+        payload: res?.data
+    }) 
+} 

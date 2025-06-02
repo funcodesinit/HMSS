@@ -48,10 +48,7 @@ model User {
   // Relations
 
   sessions Session[]
-<<<<<<< HEAD
   pos      Pos[]
-=======
->>>>>>> 9caa6e2523b37c39dbada7f3aa7fdcd1ee386a6f
 }
 
 model VerificationToken {
@@ -64,17 +61,10 @@ model VerificationToken {
 }
 
 model Guest {
-<<<<<<< HEAD
   id                 String        @id @default(uuid())
   firstName          String
   lastName           String
   email              String        @unique
-=======
-  id                 String   @id @default(uuid())
-  firstName          String
-  lastName           String
-  email              String   @unique
->>>>>>> 9caa6e2523b37c39dbada7f3aa7fdcd1ee386a6f
   phoneNumber        String?
   idNo               String?
   company            String?
@@ -83,51 +73,28 @@ model Guest {
   province           String?
   address            String?
   signature          String?
-<<<<<<< HEAD
   purpose_tourist    Boolean?      @default(false)
   purpose_conference Boolean?      @default(false)
   purpose_group      Boolean?      @default(false)
   purpose_business   Boolean?      @default(false)
   payment            PaymentMethod @default(CASH)
 
-=======
-  purpose_tourist    Boolean? @default(false)
-  purpose_conference Boolean? @default(false)
-  purpose_group      Boolean? @default(false)
-  purpose_business   Boolean? @default(false)
-  payment            PaymentMethod  @default(CASH)
-  
->>>>>>> 9caa6e2523b37c39dbada7f3aa7fdcd1ee386a6f
   createdAt DateTime @default(now())
 
-  reservations Reservation[]
-  billing      Billing[]
-<<<<<<< HEAD
-  Pos          Pos[]
-=======
->>>>>>> 9caa6e2523b37c39dbada7f3aa7fdcd1ee386a6f
+  reservations       Reservation[] 
+  Pos                Pos[]
 }
 
 enum PaymentMethod {
   CASH
   COMPANY
   CARD
-<<<<<<< HEAD
 }
-=======
-} 
->>>>>>> 9caa6e2523b37c39dbada7f3aa7fdcd1ee386a6f
 
 model Reservation {
   id            String            @id @default(uuid())
   guestId       String
-<<<<<<< HEAD
   roomId        String
-=======
-  guest         Guest             @relation(fields: [guestId], references: [id])
-  roomId        String
-  room          Room              @relation(fields: [roomId], references: [id])
->>>>>>> 9caa6e2523b37c39dbada7f3aa7fdcd1ee386a6f
   checkInDate   DateTime
   checkOutDate  DateTime
   adults        String?
@@ -139,17 +106,14 @@ model Reservation {
   status        ReservationStatus @default(PENDING)
   createdAt     DateTime          @default(now())
   Billing       Billing[]
-<<<<<<< HEAD
 
   room  Room  @relation(fields: [roomId], references: [id])
   guest Guest @relation(fields: [guestId], references: [id])
-=======
->>>>>>> 9caa6e2523b37c39dbada7f3aa7fdcd1ee386a6f
 }
 
 model Room {
   id            String        @id @default(uuid())
-  number        String        @unique
+  number        Int        @unique
   type          RoomType
   pricePerNight Float?
   status        RoomStatus    @default(AVAILABLE)
@@ -158,15 +122,12 @@ model Room {
 
 model Billing {
   id            String      @id @default(uuid())
-  guestId       String
-<<<<<<< HEAD
   reservationId String
   amount        Float
   paid          Boolean     @default(false)
   createdAt     DateTime    @default(now())
   
   reservation   Reservation @relation(fields: [reservationId], references: [id])
-  guest         Guest       @relation(fields: [guestId], references: [id])
 }
 
 model Pos {
@@ -180,14 +141,6 @@ model Pos {
   createdAt       DateTime @default(now())
   guest           Guest    @relation(fields: [guestId], references: [id])
   user            User     @relation(fields: [userId], references: [id])
-=======
-  guest         Guest       @relation(fields: [guestId], references: [id])
-  reservationId String
-  reservation   Reservation @relation(fields: [reservationId], references: [id])
-  amount        Float
-  createdAt     DateTime    @default(now())
-  paid          Boolean     @default(false)
->>>>>>> 9caa6e2523b37c39dbada7f3aa7fdcd1ee386a6f
 }
 
 enum ReservationStatus {
