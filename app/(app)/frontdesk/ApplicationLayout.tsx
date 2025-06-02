@@ -114,6 +114,7 @@ export default function ApplicationLayout({ children }: { children: React.ReactN
           </SidebarHeader>
           <SidebarBody>
             <SidebarSection>
+              
               <SidebarItem href="/frontdesk/guests" current={pathname === '/frontdesk/guests'}>
                 <UserIcon />
                 <SidebarLabel>Guests</SidebarLabel>
@@ -138,6 +139,7 @@ export default function ApplicationLayout({ children }: { children: React.ReactN
                 <InboxStackIcon />
                 <SidebarLabel>POS Transactions</SidebarLabel>
               </SidebarItem>
+
               <SidebarItem href="/frontdesk/billing" current={pathname === '/frontdesk/billing'}>
                 <CreditCardIcon />
                 <SidebarLabel>Billing</SidebarLabel>
