@@ -13,7 +13,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model Session {
   id           Int      @id @default(autoincrement())
   sessionToken String   @unique @map("session_token")
@@ -48,7 +47,7 @@ model User {
   // Relations
 
   sessions Session[]
-  pos      Pos[]
+  order    Order[]
 }
 
 model VerificationToken {
@@ -81,8 +80,8 @@ model Guest {
 
   createdAt DateTime @default(now())
 
-  reservations       Reservation[] 
-  Pos                Pos[]
+  reservations Reservation[]
+  order        Order[]
 }
 
 enum PaymentMethod {
@@ -113,34 +112,78 @@ model Reservation {
 
 model Room {
   id            String        @id @default(uuid())
-  number        Int        @unique
-  type          RoomType
+  number        Int           @unique
+  type          RoomType      @default(STANDARD)
   pricePerNight Float?
   status        RoomStatus    @default(AVAILABLE)
   reservations  Reservation[]
 }
 
 model Billing {
-  id            String      @id @default(uuid())
+  id            String    @id @default(uuid())
   reservationId String
   amount        Float
-  paid          Boolean     @default(false)
-  createdAt     DateTime    @default(now())
-  
-  reservation   Reservation @relation(fields: [reservationId], references: [id])
+  checkInDate   DateTime?
+  checkOutDate  DateTime?
+  paid          Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+
+  reservation Reservation @relation(fields: [reservationId], references: [id])
 }
 
-model Pos {
-  id              String   @id @default(uuid())
-  guestId         String
-  userId          Int
-  itemName        String
-  itemDescription String
-  photo           String?
-  amount          Float
-  createdAt       DateTime @default(now())
-  guest           Guest    @relation(fields: [guestId], references: [id])
-  user            User     @relation(fields: [userId], references: [id])
+model Category {
+  id       Int       @id @default(autoincrement())
+  name     String
+  products Product[] // One category can have many products
+}
+
+model Product {
+  id          Int      @id @default(autoincrement())
+  thumb       String?
+  name        String
+  description String?
+  price       Float
+  stock       Int      @default(1)
+  discount    Float?   @default(0)
+  isPublished Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  section     ProductByType? @default(BAR) 
+
+  orderItems OrderItem[]
+  categoryId Int
+  category   Category    @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+}
+
+model Order {
+  id      Int         @id @default(autoincrement())
+  userId  Int
+  guestId String
+  tax     Int?        @default(14)
+  status  OrderStatus @default(PENDING)
+
+  guest     Guest    @relation(fields: [guestId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id])
+
+  items OrderItem[]
+}
+
+model OrderItem {
+  id        Int     @id @default(autoincrement())
+  orderId   Int?
+  productId Int
+  quantity  Int     @default(1)
+  order     Order?  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+enum OrderStatus {
+  PENDING
+  COMPLETED
+  RETURNED
+  CANCELLED
 }
 
 enum ReservationStatus {
@@ -168,4 +211,10 @@ enum RoomType {
 enum UserType {
   STAFF
   ADMIN
+}
+
+enum ProductByType {
+  BAR
+  RESTAURANT
+  KITCHEN
 }

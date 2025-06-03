@@ -1,8 +1,11 @@
     import { ActionTypes } from "../constants/action-types";
 
     export interface PaymentState {
-        pos: [] | null;
-        selected_pos: null;
+        products: [] | null;
+        category: [] | null;
+        selected_product: null;
+        orders: [] | null;
+        selected_order: null;
         bills: [] | null;
         selected_bill: null;
         stats: {
@@ -14,8 +17,11 @@
     }
 
     const initialState: PaymentState = {
-        pos: [],
-        selected_pos: null,
+        products: [],
+        category:[],
+        selected_product: null,
+        orders: [] ,
+        selected_order: null,
         bills: [],
         selected_bill: null,
         stats:{
@@ -29,8 +35,14 @@
 
 export const paymentReducer = (state = initialState, { type, payload }) => {
     switch (type) {
-        case ActionTypes.SET_POS:
-            return { ...state, pos: payload, selected_pos: null };
+        case ActionTypes.SET_PRODUCTS:
+            return { ...state, products: payload, selected_product: null };
+        case ActionTypes.SET_SELECTED_PRODUCT:
+            return { ...state, selected_product: payload };
+        case ActionTypes.SET_CATEGORY:
+            return { ...state, category: payload };
+        
+            
         case ActionTypes.SET_BILLS:
             return { ...state, bills: payload, selected_bill: null };
         case ActionTypes.SET_SELECTED_BILL:
