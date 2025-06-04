@@ -22,9 +22,7 @@
 
 
 
-// function classNames(...classes) {
-//     return classes.filter(Boolean).join(' ')
-// }
+
 
 // export default function CreateReserve({ id }: Props) {
 
@@ -33,52 +31,14 @@
 //     // const [reservationData, setReservationData] = useState<any>(null)
 //     const isEditMode = !!id
 
-//     useEffect(() => {
-//         dispatch(fetchReservation(id));
-//     }, [id])
+//     
 
 
 
 
 //     const reservation = useSelector((state: RootState) => state?.room?.selected_reservation);
 
-//     const handleSubmit = async (values: any) => {
-//         setLoading(true)
 
-//         const method = isEditMode ? 'PATCH' : 'POST'
-//         const url = isEditMode ? `api/action` : 'api'
-
-//         const body = {
-//             guestId: values.guestId,
-//             roomId: values.roomId,
-//             checkInDate: values.checkInDate,
-//             checkOutDate: values.checkOutDate,
-//             adults: values.adults,
-//             children: values.children,
-//             extraBed: values.extraBed,
-//             bookedBy: values.bookedBy,
-//             receptionist: values.receptionist,
-//             dutyManager: values.dutyManager,
-//             status: values.status,
-//         }
-
-//         try {
-//             const response = await fetch(url, {
-//                 method,
-//                 headers: {
-//                     'Content-Type': 'application/json',
-//                 },
-//                 body: JSON.stringify(body),
-//             })
-//             if (!response.ok) throw new Error('Failed to save reservation')
-//             router.push('/frontdesk/reservations')
-//         } catch (error) {
-//             console.error('Error:', error)
-//             alert('Something went wrong. Please try again.')
-//         } finally {
-//             setLoading(false)
-//         }
-//     }
 //     const selectedGuest = guests?.find(g => g.id === reservation?.guestId)
 //     console.log('selectedGuest:', selectedGuest)
 
@@ -186,6 +146,10 @@ interface Props {
     id?: string // optional, for edit mode
 }
 
+function classNames(...classes) {
+    return classes.filter(Boolean).join(' ')
+}
+
 export default function CreateReserve({ id }: Props) {
     const router = useRouter()
     const dispatch = useDispatch()
@@ -198,9 +162,49 @@ export default function CreateReserve({ id }: Props) {
 
     const isEditMode = !!id
 
+    useEffect(() => {
+         dispatch(fetchReservation(id));
+     }, [id])
+
     const rooms = useSelector((state: RootState) => state?.room?.rooms?.data)
     const guests = useSelector((state: RootState) => state?.user?.guests?.data);
+    const handleSubmit = async (values: any) => {
+        setLoading(true)
 
+        const method = isEditMode ? 'PATCH' : 'POST'
+        const url = isEditMode ? `api/action` : 'api'
+
+        const body = {
+            guestId: values.guestId,
+            roomId: values.roomId,
+            checkInDate: values.checkInDate,
+            checkOutDate: values.checkOutDate,
+            adults: values.adults,
+            children: values.children,
+            extraBed: values.extraBed,
+            bookedBy: values.bookedBy,
+            receptionist: values.receptionist,
+            dutyManager: values.dutyManager,
+            status: values.status,
+        }
+
+        try {
+            const response = await fetch(url, {
+                method,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(body),
+            })
+            if (!response.ok) throw new Error('Failed to save reservation')
+            router.push('/frontdesk/reservations')
+        } catch (error) {
+            console.error('Error:', error)
+            alert('Something went wrong. Please try again.')
+        } finally {
+            setLoading(false)
+        }
+    }
 
 
     if (loading) return <LoadingComp />
@@ -230,8 +234,8 @@ export default function CreateReserve({ id }: Props) {
                     roomId: '',
                     checkInDate: '',
                     checkOutDate: '',
-                    adults: '1',
-                    children: '0',
+                    adults: '',
+                    child: '',
                     extraBed: false,
                     bookedBy: '',
                     receptionist: '',
@@ -251,8 +255,8 @@ export default function CreateReserve({ id }: Props) {
                     checkOutDate: Yup.date()
                         .required('Check-out date is required')
                         .min(Yup.ref('checkInDate'), 'Check-out must be after check-in'),
-                    adults: Yup.string(),
-                    children:  Yup.string(),
+                    adults: Yup.number(),
+                    child: Yup.number(),
                     extraBed: Yup.boolean(),
                     bookedBy: Yup.string().required('Booked by is required'),
                     receptionist: Yup.string().required('Receptionist is required'),
@@ -262,12 +266,7 @@ export default function CreateReserve({ id }: Props) {
                     paymentMethod: Yup.string().oneOf(['CASH', 'COMPANY', 'CARD']),
                     signature: Yup.string(),
                 })}
-                onSubmit={async (values, { setSubmitting }) => {
-                    // Handle form submission
-                    console.log('Form values:', values);
-                    setSubmitting(false);
-
-                }}
+                onSubmit={handleSubmit}
             >
                 {({ handleSubmit, handleChange, isSubmitting, errors, touched, values, resetForm, setFieldValue }) => {
 
@@ -443,8 +442,8 @@ export default function CreateReserve({ id }: Props) {
                             </section>
                             <Divider className="my-5" soft />
                             <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
-                                <FormikInput label="Adults" name="adults"  />
-                                <FormikInput label="Children" name="children"  />
+                                <FormikInput label="Adults" name="adults" />
+                                <FormikInput label="Children" name="child" />
                             </section>
 
                             <Divider className="my-5" soft />
@@ -464,10 +463,10 @@ export default function CreateReserve({ id }: Props) {
                                                 className="form-checkbox"
                                             />
                                             <Label htmlFor="extraBed">extra Bed</Label>
-                                        </Field> 
+                                        </Field>
                                     </CheckboxGroup>
                                 </Fieldset>
-                                <FormikInput label="Booked By" name="bookedBy" type="text" />                
+                                <FormikInput label="Booked By" name="bookedBy" type="text" />
                             </section>
 
                             <Divider className="my-5" soft />
@@ -476,7 +475,7 @@ export default function CreateReserve({ id }: Props) {
                                 <FormikInput label="Receptionist" name="receptionist" type="text" />
                                 <FormikInput label="Duty Manager" name="dutyManager" type="text" />
                             </section>
- 
+
                             <Divider className="my-5" soft />
 
                             <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
