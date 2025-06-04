@@ -78,6 +78,7 @@ export async function GET(req: Request) {
         categoryName: product.category?.name || null, // Include category name in response
         description: product.description,
         stock: product.stock,
+        section: product.section,
         
     }));
 

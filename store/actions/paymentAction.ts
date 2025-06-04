@@ -3,14 +3,15 @@
 import payments from "@/app/api/apisauce/payments"
 import { ActionTypes } from "../constants/action-types"
 import billing from "@/app/api/apisauce/billing"
+import orders from "@/app/api/apisauce/orders"
 
-export const fetchOrders = (options={}) => async (dispatch) => {
-    const user = await payments.list(options)
-    dispatch({
-        type: ActionTypes.SET_POS,
-        payload: user?.data
-    }) 
-} 
+// export const fetchOrders = (options={}) => async (dispatch) => {
+//     const user = await payments.list(options)
+//     dispatch({
+//         type: ActionTypes.SET_POS,
+//         payload: user?.data
+//     }) 
+// } 
  
 export const SetPosStats = () => (dispatch, getState) => {
     const posList = getState().payment.pos;
@@ -49,5 +50,14 @@ export const fetchBills = (options={}) => async (dispatch) => {
     dispatch({
         type: ActionTypes.SET_BILLS,
         payload: user?.data
+    }) 
+} 
+
+export const fetchOrders = (options={}) => async (dispatch) => {
+    const orderz = await orders.list(options)
+    console.log("Orders fetched:", orderz)
+    dispatch({
+        type: ActionTypes.SET_ORDERS,
+        payload: orderz?.data
     }) 
 } 

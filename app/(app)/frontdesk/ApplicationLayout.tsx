@@ -139,6 +139,10 @@ export default function ApplicationLayout({ children }: { children: React.ReactN
                 <InboxStackIcon />
                 <SidebarLabel>POS Transactions</SidebarLabel>
               </SidebarItem>
+               <SidebarItem href="/frontdesk/orders" current={pathname ==='/frontdesk/orders'}>
+                <InboxStackIcon />
+                <SidebarLabel>Orders</SidebarLabel>
+              </SidebarItem>
 
               <SidebarItem href="/frontdesk/billing" current={pathname === '/frontdesk/billing'}>
                 <CreditCardIcon />
