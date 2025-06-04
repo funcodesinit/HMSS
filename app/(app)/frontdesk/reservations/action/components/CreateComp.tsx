@@ -1,393 +1,516 @@
-// Created by kev, 2023-10-05 12:00:00
+// // Created by kev, 2023-10-05 12:00:00
+// 'use client'
+// import React, { useState, useEffect } from 'react'
+// import { useRouter } from 'next/navigation'
+// import { useDispatch, useSelector } from 'react-redux'
+// import { Field as Fieldz, Formik } from 'formik'
+// import * as Yup from 'yup'
+// import { RootState } from '@/store'
+// import { fetchGuests } from '@/store/actions/userActions'
+// import { fetchReservation, fetchRooms } from '@/store/actions/roomActions'
+// import FormikInput from '@/components/app/FormikField'
+// import { Button } from '@/components/button'
+// import { Checkbox, CheckboxField, CheckboxGroup } from '@/components/checkbox'
+// import { Divider } from '@/components/divider'
+// import { Field, Fieldset, Label, Legend } from '@/components/fieldset'
+// import { Heading, Subheading } from '@/components/heading'
+// import { Select } from '@/components/select'
+// import LoadingComp from '../../../Loading'
+// import { ChevronLeftIcon } from '@heroicons/react/20/solid'
+// import Link from 'next/link'
+// import GuestSelectCombobox from '@/components/app/GuestCombo'
+
+
+
+// function classNames(...classes) {
+//     return classes.filter(Boolean).join(' ')
+// }
+
+// export default function CreateReserve({ id }: Props) {
+
+
+//     const [loading, setLoading] = useState(true)
+//     // const [reservationData, setReservationData] = useState<any>(null)
+//     const isEditMode = !!id
+
+//     useEffect(() => {
+//         dispatch(fetchReservation(id));
+//     }, [id])
+
+
+
+
+//     const reservation = useSelector((state: RootState) => state?.room?.selected_reservation);
+
+//     const handleSubmit = async (values: any) => {
+//         setLoading(true)
+
+//         const method = isEditMode ? 'PATCH' : 'POST'
+//         const url = isEditMode ? `api/action` : 'api'
+
+//         const body = {
+//             guestId: values.guestId,
+//             roomId: values.roomId,
+//             checkInDate: values.checkInDate,
+//             checkOutDate: values.checkOutDate,
+//             adults: values.adults,
+//             children: values.children,
+//             extraBed: values.extraBed,
+//             bookedBy: values.bookedBy,
+//             receptionist: values.receptionist,
+//             dutyManager: values.dutyManager,
+//             status: values.status,
+//         }
+
+//         try {
+//             const response = await fetch(url, {
+//                 method,
+//                 headers: {
+//                     'Content-Type': 'application/json',
+//                 },
+//                 body: JSON.stringify(body),
+//             })
+//             if (!response.ok) throw new Error('Failed to save reservation')
+//             router.push('/frontdesk/reservations')
+//         } catch (error) {
+//             console.error('Error:', error)
+//             alert('Something went wrong. Please try again.')
+//         } finally {
+//             setLoading(false)
+//         }
+//     }
+//     const selectedGuest = guests?.find(g => g.id === reservation?.guestId)
+//     console.log('selectedGuest:', selectedGuest)
+
+//     if (loading) return <LoadingComp />
+
+//     return (
+//         <Formik
+//             enableReinitialize={true}
+//             initialValues={{
+//                 guestId: reservation?.guestId || '',
+//                 guest: selectedGuest || '',//get all details of the guest
+//                 roomId: reservation?.roomId || '',
+//                 checkInDate: reservation?.checkInDate?.slice(0, 10) || '',
+//                 checkOutDate: reservation?.checkOutDate?.slice(0, 10) || '',
+//                 adults: reservation?.adults || '',
+//                 children: reservation?.children || '',
+//                 extraBed: reservation?.extraBed || false,
+//                 bookedBy: reservation?.bookedBy || '',
+//                 receptionist: reservation?.receptionist || '',
+//                 dutyManager: reservation?.dutyManager || '',
+//                 status: reservation?.status || 'PENDING',
+//                 purpose_tourist: reservation?.purpose_tourist || false,
+//                 purpose_conference: reservation?.purpose_conference || false,
+//                 purpose_group: reservation?.purpose_group || false,
+//                 purpose_business: reservation?.purpose_business || false,
+//                 paymentMethod: reservation?.paymentMethod || 'CASH',
+//                 signature: '',
+//             }}
+//             validationSchema={Yup.object().shape({
+//                 guestId: Yup.string().required('Guest is required'),
+//                 roomId: Yup.string().required('Room is required'),
+//                 checkInDate: Yup.date().required('Check-in date is required'),
+//                 checkOutDate: Yup.date()
+//                     .required('Check-out date is required')
+//                     .min(Yup.ref('checkInDate'), 'Check-out must be after check-in'),
+//                 adults: Yup.number().required('Required').min(1, 'At least one adult'),
+//                 children: Yup.number().min(0, 'Cannot be negative'),
+//                 extraBed: Yup.boolean(),
+//                 bookedBy: Yup.string().required('Booked by is required'),
+//                 receptionist: Yup.string().required('Receptionist is required'),
+//                 dutyManager: Yup.string().required('Duty manager is required'),
+//                 status: Yup.string()
+//                     .oneOf(['PENDING', 'CONFIRMED', 'CHECKED_IN', 'CHECKED_OUT', 'CANCELLED']),
+//                 paymentMethod: Yup.string().oneOf(['CASH', 'COMPANY', 'CARD', ]),
+//                 signature: Yup.string(),
+//             })}
+//             onSubmit={handleSubmit}
+//         >
+//             {({ handleSubmit, handleChange, isSubmitting, errors, touched, values, resetForm }) => (
+//                 <form onSubmit={handleSubmit} className="mx-auto max-w-4xl">
+//                  
+
+
+
+
+
+
+//                     </section>
+
+//                     <Divider className="my-5" soft />
+
+//                     {/* show selected guest  */}
+
+
+
+
+
+
+
+
+
+
+
+
+//                 </form>
+//             )}
+//         </Formik>
+//     )
+// }
+
+
 'use client'
-import React, { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import { useDispatch, useSelector } from 'react-redux'
-import { Field as Fieldz, Formik } from 'formik'
-import * as Yup from 'yup'
-import { RootState } from '@/store'
-import { fetchGuests } from '@/store/actions/userActions'
-import { fetchReservation, fetchRooms } from '@/store/actions/roomActions'
-import FormikInput from '@/components/app/FormikField'
 import { Button } from '@/components/button'
-import { Checkbox, CheckboxField, CheckboxGroup } from '@/components/checkbox'
+import { Heading, Subheading } from '@/components/heading'
+import { ChevronLeftIcon } from '@heroicons/react/16/solid'
+import Link from 'next/link'
+import React, { useEffect, useState } from 'react'
+import LoadingComp from '../../../Loading'
+import { fetchRooms } from '@/store/actions/roomActions'
+import { fetchGuests } from '@/store/actions/userActions'
+import { useDispatch, useSelector } from 'react-redux'
+
+import { useRouter } from 'next/navigation'
+import * as Yup from 'yup'
+import { Formik } from 'formik'
 import { Divider } from '@/components/divider'
 import { Field, Fieldset, Label, Legend } from '@/components/fieldset'
-import { Heading, Subheading } from '@/components/heading'
 import { Select } from '@/components/select'
-import LoadingComp from '../../../Loading'
-import { ChevronLeftIcon } from '@heroicons/react/20/solid'
-import Link from 'next/link'
+import { RootState } from '@/store'
 import GuestSelectCombobox from '@/components/app/GuestCombo'
+import FormikInput from '@/components/app/FormikField'
+import { CheckboxField, CheckboxGroup } from '@/components/checkbox'
 
 interface Props {
     id?: string // optional, for edit mode
 }
 
-function classNames(...classes) {
-    return classes.filter(Boolean).join(' ')
-}
-
 export default function CreateReserve({ id }: Props) {
     const router = useRouter()
     const dispatch = useDispatch()
-
     const [loading, setLoading] = useState(true)
-    // const [reservationData, setReservationData] = useState<any>(null)
-    const isEditMode = !!id
-
-    useEffect(() => {
-        dispatch(fetchReservation(id));
-    }, [id])
 
     useEffect(() => {
         dispatch(fetchRooms());
         dispatch(fetchGuests()).then(() => setLoading(false));
     }, [dispatch])
 
+    const isEditMode = !!id
+
+    const rooms = useSelector((state: RootState) => state?.room?.rooms?.data)
     const guests = useSelector((state: RootState) => state?.user?.guests?.data);
 
-    const rooms = useSelector((state: RootState) => state?.room?.rooms?.data || [])
-    const reservation = useSelector((state: RootState) => state?.room?.selected_reservation);
 
-    const handleSubmit = async (values: any) => {
-        setLoading(true)
-
-        const method = isEditMode ? 'PATCH' : 'POST'
-        const url = isEditMode ? `api/action` : 'api'
-
-        const body = {
-            guestId: values.guestId,
-            roomId: values.roomId,
-            checkInDate: values.checkInDate,
-            checkOutDate: values.checkOutDate,
-            adults: values.adults,
-            children: values.children,
-            extraBed: values.extraBed,
-            bookedBy: values.bookedBy,
-            receptionist: values.receptionist,
-            dutyManager: values.dutyManager,
-            status: values.status,
-        }
-
-        try {
-            const response = await fetch(url, {
-                method,
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(body),
-            })
-            if (!response.ok) throw new Error('Failed to save reservation')
-            router.push('/frontdesk/reservations')
-        } catch (error) {
-            console.error('Error:', error)
-            alert('Something went wrong. Please try again.')
-        } finally {
-            setLoading(false)
-        }
-    }
-    const selectedGuest = guests?.find(g => g.id === reservation?.guestId)
-    console.log('selectedGuest:', selectedGuest)
 
     if (loading) return <LoadingComp />
 
     return (
-        <Formik
-            enableReinitialize={true}
-            initialValues={{
-                guestId: reservation?.guestId || '',
-                guest: selectedGuest || '',//get all details of the guest
-                roomId: reservation?.roomId || '',
-                checkInDate: reservation?.checkInDate?.slice(0, 10) || '',
-                checkOutDate: reservation?.checkOutDate?.slice(0, 10) || '',
-                adults: reservation?.adults || '',
-                children: reservation?.children || '',
-                extraBed: reservation?.extraBed || false,
-                bookedBy: reservation?.bookedBy || '',
-                receptionist: reservation?.receptionist || '',
-                dutyManager: reservation?.dutyManager || '',
-                status: reservation?.status || 'PENDING',
-                signature: '',
-            }}
-            validationSchema={Yup.object().shape({
-                guestId: Yup.string().required('Guest is required'),
-                roomId: Yup.string().required('Room is required'),
-                checkInDate: Yup.date().required('Check-in date is required'),
-                checkOutDate: Yup.date()
-                    .required('Check-out date is required')
-                    .min(Yup.ref('checkInDate'), 'Check-out must be after check-in'),
-                adults: Yup.number().required('Required').min(1, 'At least one adult'),
-                children: Yup.number().min(0, 'Cannot be negative'),
-                extraBed: Yup.boolean(),
-                bookedBy: Yup.string().required('Booked by is required'),
-                receptionist: Yup.string().required('Receptionist is required'),
-                dutyManager: Yup.string().required('Duty manager is required'),
-                status: Yup.string()
-                    .oneOf(['PENDING', 'CONFIRMED', 'CHECKED_IN', 'CHECKED_OUT', 'CANCELLED']),
-                signature: Yup.string(),
-            })}
-            onSubmit={handleSubmit}
-        >
-            {({ handleSubmit, handleChange, isSubmitting, errors, touched, values, resetForm }) => (
-                <form onSubmit={handleSubmit} className="mx-auto max-w-4xl">
-                    <Heading>{isEditMode ? 'Reservation Form ' : 'Reservation Form'}</Heading>
+        <div>
+            <div className='flex items-center justify-between mb-4'>
+                <Heading>{isEditMode ? 'Reservation Form ' : 'Reservation Form'}</Heading>
+                <Button>
+                    Print
+                </Button>
+            </div>
 
-                    <div className="max-lg:hidden mb-4">
-                        <Link
-                            href="/frontdesk/reservations"
-                            className="inline-flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400"
-                        >
-                            <ChevronLeftIcon className="size-4 fill-zinc-400 dark:fill-zinc-500" />
-                            Reservation list
-                        </Link>
-                    </div>
+            <div className="max-lg:hidden mb-4">
+                <Link
+                    href="/frontdesk/reservations"
+                    className="inline-flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400"
+                >
+                    <ChevronLeftIcon className="size-4 fill-zinc-400 dark:fill-zinc-500" />
+                    Reservation list
+                </Link>
+            </div>
+            <Formik
+                initialValues={{
+                    guestId: '',
+                    guest: null,
+                    roomId: '',
+                    checkInDate: '',
+                    checkOutDate: '',
+                    adults: '1',
+                    children: '0',
+                    extraBed: false,
+                    bookedBy: '',
+                    receptionist: '',
+                    dutyManager: '',
+                    status: 'PENDING',
+                    purpose_tourist: false,
+                    purpose_conference: false,
+                    purpose_group: false,
+                    purpose_business: false,
+                    paymentMethod: 'CASH',
+                    signature: '',
+                }}
+                validationSchema={Yup.object().shape({
+                    guestId: Yup.string().required('Guest is required'),
+                    roomId: Yup.string().required('Room is required'),
+                    checkInDate: Yup.date().required('Check-in date is required'),
+                    checkOutDate: Yup.date()
+                        .required('Check-out date is required')
+                        .min(Yup.ref('checkInDate'), 'Check-out must be after check-in'),
+                    adults: Yup.string(),
+                    children:  Yup.string(),
+                    extraBed: Yup.boolean(),
+                    bookedBy: Yup.string().required('Booked by is required'),
+                    receptionist: Yup.string().required('Receptionist is required'),
+                    dutyManager: Yup.string().required('Duty manager is required'),
+                    status: Yup.string()
+                        .oneOf(['PENDING', 'CONFIRMED', 'CHECKED_IN', 'CHECKED_OUT', 'CANCELLED']),
+                    paymentMethod: Yup.string().oneOf(['CASH', 'COMPANY', 'CARD']),
+                    signature: Yup.string(),
+                })}
+                onSubmit={async (values, { setSubmitting }) => {
+                    // Handle form submission
+                    console.log('Form values:', values);
+                    setSubmitting(false);
 
-                    <Divider className="my-5 mt-6" />
+                }}
+            >
+                {({ handleSubmit, handleChange, isSubmitting, errors, touched, values, resetForm, setFieldValue }) => {
 
-                    {Object.keys(errors).length > 0 && (
-                        <div className="mb-4 rounded-md border border-red-300 bg-red-50 p-4">
-                            <ul className="list-disc list-inside text-sm text-red-700">
-                                {Object.entries(errors).map(([field, message]) => (
-                                    <li key={field}>
-                                        {typeof message === 'string' ? message : 'Invalid value'}
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                    )}
+                    useEffect(() => {
+                        const selectedGuest = guests?.find((g) => g.id === values?.guestId);
+                        if (selectedGuest) {
+                            setFieldValue('guest', selectedGuest);
+                        }
+                    }, [values.guestId, guests, setFieldValue]);
 
-                    <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
-                        <Field>
-                            <Label>Room</Label>
-                            <Select name="roomId" value={values.roomId} onChange={handleChange}>
-                                <option value="">Select Room</option>
-                                {rooms.map((room) => (
-                                    <option key={room.id} value={room.id}>
-                                        Room No. {room.number}
-                                    </option>
-                                ))}
-                            </Select>
-                        </Field>
-                        <Field>
-                            <Label>Guest</Label>
-                            {/* {guests?.length > 0 ? (
-                                <GuestSelectCombobox
-                                    name="guestId"
-                                    options={guests}
-                                    displayValue={(g) => g?.firstName}
+                    return (
+                        <form onSubmit={handleSubmit} className="mx-auto max-w-4xl">
+                            <Divider className="my-5 mt-6" />
+
+                            {Object.keys(errors).length > 0 && (
+
+                                <div className="mb-4 rounded-md border border-red-300 bg-red-50 p-4">
+                                    <ul className="list-disc list-inside text-sm text-red-700">
+                                        {Object.entries(errors).map(([field, message]) => (
+                                            <li key={field}>
+                                                {typeof message === 'string' ? message : 'Invalid value'}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            )}
+                            <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
+
+                                <Field>
+                                    <Label>Select Room</Label>
+                                    <Select name="roomId" value={values.roomId} onChange={handleChange}>
+                                        <option value="">Select Room</option>
+                                        {rooms?.map((room) => (
+                                            <option key={room.id} value={room.id}>
+                                                Room No. {room.number} - {room.type} - {room.status}
+                                            </option>
+                                        ))}
+                                    </Select>
+                                </Field>
+
+                                <Field>
+                                    <Label>Select Guest</Label>
+                                    {guests?.length > 0 ? (
+                                        <GuestSelectCombobox
+                                            name="guestId"
+                                            options={guests}
+                                            displayValue={(g) => `${g?.firstName} ${g?.lastName}`}
+                                        />
+                                    ) : (
+                                        <p className="text-sm text-zinc-500">Loading guests...</p>
+                                    )}
+
+                                </Field>
+
+                            </section>
+
+                            <Divider className="my-5 mt-6" />
+                            <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
+                                <FormikInput label="First Name" name="guest.firstName" type="text" disabled />
+                                <FormikInput label="Last Name" name="guest.lastName" type="text" disabled />
+                            </section>
+                            <Divider className="my-5" soft />
+
+                            <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
+                                <FormikInput label="Email" name="guest.email" type="email" disabled />
+                                <FormikInput label="Phone Number" name="guest.phoneNumber" type="text" disabled />
+                            </section>
+
+                            <Divider className="my-5" soft />
+
+                            <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
+                                <FormikInput label="Company" name="guest.company" type="text" disabled />
+                                <FormikInput label="Address" name="guest.address" type="text" disabled />
+                            </section>
+
+                            <Divider className="my-5" soft />
+
+                            <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
+                                <FormikInput label="ID No" name="guest.idNo" type="text" disabled />
+                                <FormikInput label="City" name="guest.city" type="text" disabled />
+                                <FormikInput label="Province" name="guest.province" type="text" disabled />
+                                <FormikInput label="Country" name="guest.country" type="text" disabled />
+                            </section>
+                            <Divider className="my-5" soft />
+
+                            <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
+                                <Fieldset>
+                                    <Legend>Purpose</Legend>
+                                    <CheckboxGroup>
+                                        <Field className='gap-2 flex items-center'>
+                                            <input
+                                                id="purpose_tourist"
+                                                name="purpose_tourist"
+                                                type="checkbox"
+                                                onChange={handleChange}
+                                                checked={values?.purpose_tourist}
+                                                className="form-checkbox"
+                                            />
+                                            <Label htmlFor="purpose_tourist">Tourism</Label>
+                                        </Field>
+                                        <Field className='gap-2 flex items-center'>
+                                            <input
+                                                id="purpose_conference"
+                                                name="purpose_conference"
+                                                type="checkbox"
+                                                onChange={handleChange}
+                                                checked={values?.purpose_conference}
+                                                className="form-checkbox"
+                                            />
+                                            <Label htmlFor="purpose_conference">Conference</Label>
+                                        </Field>
+                                        <Field className='gap-2 flex items-center'>
+                                            <input
+                                                id="purpose_group"
+                                                name="purpose_group"
+                                                type="checkbox"
+                                                onChange={handleChange}
+                                                checked={values?.purpose_group}
+                                                className="form-checkbox"
+                                            />
+                                            <Label htmlFor="purpose_group">Group</Label>
+                                        </Field>
+                                        <Field className='gap-2 flex items-center'>
+                                            <input
+                                                id="purpose_business"
+                                                name="purpose_business"
+                                                type="checkbox"
+                                                onChange={handleChange}
+                                                checked={values?.purpose_business}
+                                                className="form-checkbox"
+                                            />
+                                            <Label htmlFor="purpose_business">Business </Label>
+                                        </Field>
+                                    </CheckboxGroup>
+                                </Fieldset>
+
+                                <div className="space-y-6">
+                                    <Field>
+                                        <Label>Payment Method</Label>
+                                        <Select name="paymentMethod">
+                                            <option value="CASH">Cash</option>
+                                            <option value="COMPANY">Company</option>
+                                            <option value="CARD">Card</option>
+                                        </Select>
+                                    </Field>
+                                    <FormikInput label="Signature" name="signature" type="text" />
+                                </div>
+                            </section>
+
+                            {/* Ts and Cs  */}
+                            <div className='mt-5'>
+                                <Subheading>Terms and Conditions</Subheading>
+                                <ul>
+                                    <li>Check in is from 1400 hrs</li>
+                                    <li>Check out is at 1100 hrs</li>
+                                    <li>Late check out is only permitted with management consent</li>
+                                    <li>Guests may not leave without full payment of services rendered unless permitted by management</li>
+                                    <li>Pets are not allowed on the premises</li>
+                                    <li>In-house guest may only cancel next day booking the night prior to checking out</li>
+                                    <li>No in-room parties allowed</li>
+                                </ul>
+                            </div>
+
+                            <Divider className="my-5" soft />
+                            <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
+                                <FormikInput label="Check-in Date" name="checkInDate" type="date" />
+                                <FormikInput
+                                    label="Check-out Date"
+                                    name="checkOutDate"
+                                    type="date"
+                                    min={values.checkInDate}
                                 />
-                            ) : (
-                                <p className="text-sm text-zinc-500">Loading guests...</p>
-                            )} */}
-                            <Select name="guestId" value={values.guestId} onChange={handleChange}>
-                                <option value="">Select Guest</option>
-                                {guests.map((guest) => (
-                                    <option key={guest.id} value={guest.id}>
-                                        {guest.firstName} {guest.lastName}
-                                    </option>
-                                ))}
-                            </Select>
-                        </Field>
-                    </section>
+                            </section>
+                            <Divider className="my-5" soft />
+                            <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
+                                <FormikInput label="Adults" name="adults"  />
+                                <FormikInput label="Children" name="children"  />
+                            </section>
 
-                    <Divider className="my-5" soft />
-
-                    {/* show selected guest  */}
+                            <Divider className="my-5" soft />
 
 
-                    <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
-                        <FormikInput label="First Name" name="guest.firstName" type="text" disabled />
-                        <FormikInput label="Last Name" name="guest.lastName" type="text" disabled />
-                    </section>
 
-                    <Divider className="my-5" soft />
+                            <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
+                                <Fieldset>
+                                    <CheckboxGroup>
+                                        <Field className='gap-2 flex items-center'>
+                                            <input
+                                                id="extraBed"
+                                                name="extraBed"
+                                                type="checkbox"
+                                                onChange={handleChange}
+                                                checked={values?.purpose_tourist}
+                                                className="form-checkbox"
+                                            />
+                                            <Label htmlFor="extraBed">extra Bed</Label>
+                                        </Field> 
+                                    </CheckboxGroup>
+                                </Fieldset>
+                                <FormikInput label="Booked By" name="bookedBy" type="text" />                
+                            </section>
 
-                    <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
-                        <FormikInput label="Email" name="guest.email" type="email" disabled />
-                        <FormikInput label="Phone Number" name="guest.phoneNumber" type="text" disabled />
-                    </section>
+                            <Divider className="my-5" soft />
 
-                    <Divider className="my-5" soft />
+                            <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
+                                <FormikInput label="Receptionist" name="receptionist" type="text" />
+                                <FormikInput label="Duty Manager" name="dutyManager" type="text" />
+                            </section>
+ 
+                            <Divider className="my-5" soft />
 
-                    <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
-                        <FormikInput label="Company" name="guest.company" type="text" disabled />
-                        <FormikInput label="Address" name="guest.address" type="text" disabled />
-                    </section>
-
-                    <Divider className="my-5" soft />
-
-                    <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
-                        <FormikInput label="ID No" name="guest.idNo" type="text" disabled />
-                        <FormikInput label="City" name="guest.city" type="text" disabled />
-                        <FormikInput label="Province" name="guest.province" type="text" disabled />
-                        <FormikInput label="Country" name="guest.country" type="text" disabled />
-                    </section>
-                    <Divider className="my-5" soft />
-
-                    <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
-                        <Fieldset>
-                            <Legend>Purpose</Legend>
-                            {/* <Text>Purpose of guest visit.</Text> */}
-                            <CheckboxGroup>
-                                <Field className='gap-2 flex items-center'>
-                                    <input
-                                        id="purpose_tourist"
-                                        name="purpose_tourist"
-                                        type="checkbox"
-                                        onChange={handleChange}
-                                        checked={values.guest.purpose_tourist}
-                                        className="form-checkbox"
-                                    />
-                                    <Label htmlFor="purpose_tourist">Tourism</Label>
+                            <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
+                                <Field>
+                                    <Label>Status</Label>
+                                    <Select name="status" value={values.status} onChange={handleChange}>
+                                        <option value="">Select Status</option>
+                                        <option value="PENDING">PENDING</option>
+                                        <option value="CONFIRMED">CONFIRMED</option>
+                                        <option value="CHECKED_IN">CHECKED_IN</option>
+                                        <option value="CHECKED_OUT">CHECKED_OUT</option>
+                                        <option value="CANCELLED">CANCELLED</option>
+                                    </Select>
                                 </Field>
-                                <Field className='gap-2 flex items-center'>
-                                    <input
-                                        id="purpose_conference"
-                                        name="purpose_conference"
-                                        type="checkbox"
-                                        onChange={handleChange}
-                                        checked={values.guest.purpose_conference}
-                                        className="form-checkbox"
-                                    />
-                                    <Label htmlFor="purpose_conference">Conference</Label>
-                                </Field>
-                                <Field className='gap-2 flex items-center'>
-                                    <input
-                                        id="purpose_group"
-                                        name="purpose_group"
-                                        type="checkbox"
-                                        onChange={handleChange}
-                                        checked={values.guest.purpose_group}
-                                        className="form-checkbox"
-                                    />
-                                    <Label htmlFor="purpose_group">Group</Label>
-                                </Field>
-                                <Field className='gap-2 flex items-center'>
-                                    <input
-                                        id="purpose_business"
-                                        name="purpose_business"
-                                        type="checkbox"
-                                        onChange={handleChange}
-                                        checked={values.guest.purpose_business}
-                                        className="form-checkbox"
-                                    />
-                                    <Label htmlFor="purpose_business">Business</Label>
-                                </Field>
-                            </CheckboxGroup>
-                        </Fieldset>
+                            </section>
 
-                        <div className="space-y-6">
-                            <Field>
-                                <Label>Payment Method</Label>
-                                <Select name="guest.paymentMethod">
-                                    <option value="CASH">Cash</option>
-                                    <option value="COMPANY">Company</option>
-                                    <option value="CARD">Card</option>
-                                </Select>
-                            </Field>
-                            <FormikInput label="guest.Signature" name="signature" type="text" />
-                        </div>
-                    </section>
+                            <Divider className="my-5" soft />
+                            <div className="flex justify-end gap-4">
+                                <Button type="button" plain onClick={() => resetForm()}>
+                                    Reset
+                                </Button>
+                                <Button type="submit" disabled={isSubmitting || loading}>
+                                    {loading
+                                        ? 'Submitting...'
+                                        : isEditMode
+                                            ? 'Update Reservation'
+                                            : 'Create Reservation'}
+                                </Button>
+                            </div>
+                        </form>
+                    )
+                }}
+            </Formik>
 
-                    <div className='mt-5'>
-                        <Subheading>Terms and Conditions</Subheading>
-                        <ul>
-                            <li>Check in is from 1400 hrs</li>
-                            <li>Check out is at 1100 hrs</li>
-                            <li>Late check out is only permitted with management consent</li>
-                            <li>Guests may not leave without full payment of services rendered unless permitted by management</li>
-                            <li>Pets are not allowed on the premises</li>
-                            <li>In-house guest may only cancel next day booking the night prior to checking out</li>
-                            <li>No in-room parties allowed</li>
-                        </ul>
-                    </div>
-
-
-                    <Divider className="my-5" soft />
-
-                    <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
-                        <FormikInput label="Check-in Date" name="checkInDate" type="date" />
-                        <FormikInput
-                            label="Check-out Date"
-                            name="checkOutDate"
-                            type="date"
-                            min={values.checkInDate}
-                        />
-                    </section>
-
-                    <Divider className="my-5" soft />
-
-                    <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
-                        <FormikInput label="Adults" name="adults" type="number" />
-                        <FormikInput label="Children" name="children" type="number" />
-                    </section>
-
-                    <Divider className="my-5" soft />
-
-                    <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
-                        <CheckboxField>
-                            {/* <Checkbox name="extraBed" />
-                            <Label>Extra Bed</Label> */}
-                            <Field className='gap-2 flex items-center'>
-                                <input
-                                    id="extraBed"
-                                    name="extraBed"
-                                    type="checkbox"
-                                    onChange={handleChange}
-                                    checked={values.extraBed}
-                                    className="form-checkbox"
-                                />
-                                <Label htmlFor="extraBed">Business</Label>
-                            </Field>
-                        </CheckboxField>
-                    </section>
-
-                    <Divider className="my-5" soft />
-
-                    <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
-                        <FormikInput label="Booked By" name="bookedBy" type="text" />
-                        <FormikInput label="Receptionist" name="receptionist" type="text" />
-                    </section>
-
-                    <Divider className="my-5" soft />
-
-                    <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
-                        <FormikInput label="Duty Manager" name="dutyManager" type="text" />
-                    </section>
-
-                    <Divider className="my-5" soft />
-
-                    <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
-                        <Field>
-                            <Label>Status</Label>
-                            <Select name="status" value={values.status} onChange={handleChange}>
-                                <option value="">Select Status</option>
-                                <option value="PENDING">PENDING</option>
-                                <option value="CONFIRMED">CONFIRMED</option>
-                                <option value="CHECKED_IN">CHECKED_IN</option>
-                                <option value="CHECKED_OUT">CHECKED_OUT</option>
-                                <option value="CANCELLED">CANCELLED</option>
-                            </Select>
-                        </Field>
-                    </section>
-
-                    <Divider className="my-5" soft />
-
-                    <div className="flex justify-end gap-4">
-                        <Button type="button" plain onClick={() => resetForm()}>
-                            Reset
-                        </Button>
-                        <Button type="submit" disabled={isSubmitting || loading}>
-                            {loading
-                                ? 'Submitting...'
-                                : isEditMode
-                                    ? 'Update Reservation'
-                                    : 'Create Reservation'}
-                        </Button>
-                    </div>
-                </form>
-            )}
-        </Formik>
+        </div>
     )
 }
