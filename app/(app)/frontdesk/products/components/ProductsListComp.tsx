@@ -77,7 +77,7 @@ export default function ProductsListComp() {
               stock: selected_product?.stock?.toString() || '1',
               categoryId: selected_product?.categoryId?.toString() || '',
               isPublished: selected_product?.isPublished || false,
-             section: selected_product?.section || 'BAR',
+              section: selected_product?.section || 'BAR',
 
             }}
 
@@ -146,7 +146,7 @@ export default function ProductsListComp() {
             }}
           >
             {({
-              handleSubmit, isSubmitting, errors, handleChange, status, setStatus, values
+              handleSubmit, isSubmitting, errors, handleChange, status, setFieldValue, setStatus, values
             }) => (
               <form method="post" onSubmit={handleSubmit}>
                 <DialogTitle> {selected_product?.id ? `Update Product ${selected_product?.name}` : 'Add new Product'}</DialogTitle>
@@ -195,8 +195,38 @@ export default function ProductsListComp() {
                   </Field>
                   <Divider className='my-5' />
 
-                  <FormikInput label={'thumb'} name="thumb" type="file" />
+                  <Field >
+
+                    <div>
+                      <Label>Product Image</Label>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        name="thumb"
+                        onChange={async (event) => {
+                          const file = event.currentTarget.files?.[0];
+                          if (file) {
+                            const reader = new FileReader();
+                            reader.onloadend = () => {
+                              setFieldValue("thumb", reader.result); // Set base64 string
+                            };
+                            reader.readAsDataURL(file);
+                          }
+                        }}
+                      />
+                      {errors.thumb && (
+                        <div className="text-sm text-red-600 mt-1">{errors.thumb}</div>
+                      )}
+                    </div>
+
+                  </Field>
+
                   <Divider className='my-5' />
+                  {values.thumb && typeof values.thumb === 'string' && values.thumb.startsWith("data:image") && (
+                    <img src={values.thumb} alt="Preview" className="mt-2 w-32 h-32 object-cover rounded" />
+                  )}
+                  <Divider className='my-5' />
+
 
                   <FormikInput label={'name'} name="name" placeholder="product name" />
                   <Divider className='my-5' />
@@ -264,9 +294,9 @@ export default function ProductsListComp() {
             <div className="flex items-center justify-between">
               <div key={product.id} className="flex gap-6 py-6">
                 <div className="w-32 shrink-0">
-                  {/* <Link href={product?.url} aria-hidden="true">
-                    <img className="aspect-3/2 rounded-lg shadow-sm" src={product.imgUrl} alt="" />
-                  </Link> */}
+
+                  <img className="aspect-3/2 rounded-lg shadow-sm" src={product?.thumb} alt="" />
+
                 </div>
                 <div className="space-y-1.5">
                   <div className="text-base/6 font-semibold">

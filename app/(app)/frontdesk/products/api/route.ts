@@ -1,5 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
+import cloudinary from "cloudinary";
+
 
 export async function GET(req: Request) {
   try {
@@ -69,17 +71,17 @@ export async function GET(req: Request) {
 
     // Transform the response to match the expected format
     const formattedProducts = products.map((product) => ({
-        id: product.id,
-        name: product.name,
-        price: product.price,
-        discount: product.discount,
-        thumb: product.thumb,
-        categoryId: product.categoryId,
-        categoryName: product.category?.name || null, // Include category name in response
-        description: product.description,
-        stock: product.stock,
-        section: product.section,
-        
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      discount: product.discount,
+      thumb: product.thumb,
+      categoryId: product.categoryId,
+      categoryName: product.category?.name || null, // Include category name in response
+      description: product.description,
+      stock: product.stock,
+      section: product.section,
+
     }));
 
     return NextResponse.json(
@@ -114,8 +116,15 @@ type ProductRequest = {
 };
 
 
+cloudinary.v2.config({
+  cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY,
+  api_secret: process.env.NEXT_CLOUDINARY_API_SECRET,
+});
 
- export async function POST(req: Request) {
+
+
+export async function POST(req: Request) {
   try {
     const body: ProductRequest = await req.json();
 
@@ -142,14 +151,42 @@ type ProductRequest = {
       );
     }
 
+    let thumbUrl: string | undefined = undefined;
+
+    //upload thumb to Cloudinary if provided
+    if (thumb) {
+      try {
+        // const uploadResponse = await cloudinary.v2.uploader.upload(thumb, {
+        //   folder: "products",
+        // });
+        const uploadResponse = await cloudinary.v2.uploader.upload(thumb, {
+          folder: "frontdesk/products",
+        });
+
+        body.thumb = uploadResponse.secure_url; // You did this...
+        thumbUrl = uploadResponse.secure_url; // ...but this is needed for `processedInput`
+      } catch (uploadError) {
+        console.error("Error uploading image to Cloudinary:", uploadError);
+        return NextResponse.json({ error: "Image upload failed" }, { status: 500 });
+      }
+    }
+
+    const priceNum = parseFloat(price);
+    const discountNum = discount ? parseFloat(discount) : 0;
+    const stockNum = parseInt(stock);
+
+    if (isNaN(priceNum) || isNaN(stockNum) || (discount && isNaN(discountNum))) {
+      return NextResponse.json({ error: "Price, stock, or discount has invalid format" }, { status: 400 });
+    }
+
 
     const processedInput = {
-      thumb,
+      thumb: thumbUrl,
       name,
       description,
-      price: parseFloat(price),
-      discount: discount ? parseFloat(discount) : 0,
-      stock: parseInt(stock),
+      price: priceNum,
+      discount: discountNum,
+      stock: stockNum,
       isPublished: Boolean(isPublished),
       categoryId: parseInt(categoryId),
       section, // <- must match enum: "BAR", "RESTAURANT", etc.

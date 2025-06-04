@@ -4,7 +4,7 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useDispatch, useSelector } from 'react-redux'
-import { Formik } from 'formik'
+import { Field as Fieldz, Formik } from 'formik'
 import * as Yup from 'yup'
 import { RootState } from '@/store'
 import { fetchGuests } from '@/store/actions/userActions'
@@ -19,10 +19,17 @@ import { Select } from '@/components/select'
 import LoadingComp from '../../../Loading'
 import { ChevronLeftIcon } from '@heroicons/react/20/solid'
 import Link from 'next/link'
+import GuestSelectCombobox from '@/components/app/GuestCombo'
 
 interface Props {
     id?: string // optional, for edit mode
 }
+
+function classNames(...classes) {
+    return classes.filter(Boolean).join(' ')
+}
+
+
 
 export default function CreateReserve({ id }: Props) {
     const router = useRouter()
@@ -33,34 +40,39 @@ export default function CreateReserve({ id }: Props) {
     const isEditMode = !!id
 
     useEffect(() => {
-        const loadInitialData = async () => {
-            await dispatch(fetchGuests())
-            await dispatch(fetchRooms())
+        dispatch(fetchRooms());
+        dispatch(fetchGuests()).then(() => setLoading(false));
+    }, [dispatch])
 
-            if (isEditMode) {
-                try {
-                    const res = await fetch(`/api/reservations/${id}`)
-                    const data = await res.json()
-                    setReservationData(data)
-                } catch (err) {
-                    console.error('Failed to fetch reservation data', err)
-                }
-            }
+    const guests = useSelector((state: RootState) => state?.user?.guests?.data);
 
-            setLoading(false)
-        }
+  
+    // useEffect(() => {
+    //     const loadInitialData = async () => {  
+    //         if (isEditMode) {
+    //             try {
+    //                 const res = await fetch(`/api/reservations/${id}`)
+    //                 const data = await res.json()
+    //                 setReservationData(data)
+    //             } catch (err) {
+    //                 console.error('Failed to fetch reservation data', err)
+    //             }
+    //         }
+    //         setLoading(false)
+    //     }
+    //     loadInitialData()
+    // }, [id, isEditMode])
 
-        loadInitialData()
-    }, [dispatch, id, isEditMode])
 
-    const guests = useSelector((state: RootState) => state?.user?.guests?.data || [])
+
+    const guest = useSelector((state: RootState) => state?.user?.selected_guest?.data);
     const rooms = useSelector((state: RootState) => state?.room?.rooms?.data || [])
 
     const handleSubmit = async (values: any) => {
         setLoading(true)
 
         const method = isEditMode ? 'PATCH' : 'POST'
-        const url = isEditMode ? `/api/reservations/${id}` : 'api'
+        const url = isEditMode ? `api/action` : 'api'
 
         const body = {
             guestId: values.guestId,
@@ -96,23 +108,25 @@ export default function CreateReserve({ id }: Props) {
         }
     }
 
+
+
     if (loading) return <LoadingComp />
 
     return (
         <Formik
             enableReinitialize
             initialValues={{
-                guestId: reservationData?.guestId || '',
-                roomId: reservationData?.roomId || '',
-                checkInDate: reservationData?.checkInDate?.slice(0, 10) || '',
-                checkOutDate: reservationData?.checkOutDate?.slice(0, 10) || '',
-                adults: reservationData?.adults || '',
-                children: reservationData?.children || '',
-                extraBed: reservationData?.extraBed || false,
-                bookedBy: reservationData?.bookedBy || '',
-                receptionist: reservationData?.receptionist || '',
-                dutyManager: reservationData?.dutyManager || '',
-                status: reservationData?.status || 'PENDING',
+                guestId: guest?.guestId || '',
+                roomId: guest?.roomId || '',
+                checkInDate: guest?.checkInDate?.slice(0, 10) || '',
+                checkOutDate: guest?.checkOutDate?.slice(0, 10) || '',
+                adults: guest?.adults || '',
+                children: guest?.children || '',
+                extraBed: guest?.extraBed || false,
+                bookedBy: guest?.bookedBy || '',
+                receptionist: guest?.receptionist || '',
+                dutyManager: guest?.dutyManager || '',
+                status: guest?.status || 'PENDING',
                 signature: '',
             }}
             validationSchema={Yup.object().shape({
@@ -122,13 +136,8 @@ export default function CreateReserve({ id }: Props) {
                 checkOutDate: Yup.date()
                     .required('Check-out date is required')
                     .min(Yup.ref('checkInDate'), 'Check-out must be after check-in'),
-                adults: Yup.string()
-                    .required('Number of adults is required')
-                    .matches(/^\d+$/, 'Adults must be a number')
-                    .min(1, 'At least one adult is required'),
-                children: Yup.string().min(0, 'Number of children cannot be negative')
-                    .matches(/^\d+$/, 'Adults must be a number')
-                    .nullable(),
+                adults: Yup.number().required('Required').min(1, 'At least one adult'),
+                children: Yup.number().min(0, 'Cannot be negative'),
                 extraBed: Yup.boolean(),
                 bookedBy: Yup.string().required('Booked by is required'),
                 receptionist: Yup.string().required('Receptionist is required'),
@@ -138,8 +147,8 @@ export default function CreateReserve({ id }: Props) {
                 signature: Yup.string(),
             })}
             onSubmit={handleSubmit}
-            validateOnBlur
-            validateOnChange
+        // validateOnBlur
+        // validateOnChange
         >
             {({ handleSubmit, handleChange, isSubmitting, errors, touched, values, resetForm }) => (
                 <form onSubmit={handleSubmit} className="mx-auto max-w-4xl">
@@ -183,14 +192,23 @@ export default function CreateReserve({ id }: Props) {
                         </Field>
                         <Field>
                             <Label>Guest</Label>
-                            <Select name="guestId" value={values.guestId} onChange={handleChange}>
+                            {guests.length > 0 ? (
+                                <GuestSelectCombobox
+                                    name="guestId"
+                                    options={guests}
+                                    displayValue={(g) => g?.firstName}
+                                />
+                            ) : (
+                                <p className="text-sm text-zinc-500">Loading guests...</p>
+                            )}
+                            {/* <Select name="guestId" value={values.guestId} onChange={handleChange}>
                                 <option value="">Select Guest</option>
                                 {guests.map((guest) => (
                                     <option key={guest.id} value={guest.id}>
                                         {guest.firstName} {guest.lastName}
                                     </option>
                                 ))}
-                            </Select>
+                            </Select> */}
                         </Field>
                     </section>
 
@@ -209,8 +227,8 @@ export default function CreateReserve({ id }: Props) {
                     <Divider className="my-5" soft />
 
                     <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
-                        <FormikInput label="Adults" name="adults" type="text" />
-                        <FormikInput label="Children" name="children" type="text" />
+                        <FormikInput label="Adults" name="adults" type="number" />
+                        <FormikInput label="Children" name="children" type="number" />
                     </section>
 
                     <Divider className="my-5" soft />
