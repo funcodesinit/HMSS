@@ -24,7 +24,7 @@ export const fetchReservations = (options={}) => async (dispatch) => {
 export const fetchReservation = (id:any, options={}) => async (dispatch) => {
     const res = await reservations.getDetails(id,options)
     dispatch({
-        type: ActionTypes.SET_RESERVATIONS,
+        type: ActionTypes.SET_SELECTED_RESERVATION,
         payload: res?.data
     }) 
 } 

@@ -1,27 +1,31 @@
 // Created by kev, 2023-10-05 12:00:00
 'use client'
-
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useDispatch, useSelector } from 'react-redux'
-import { Formik } from 'formik'
+import { Field as Fieldz, Formik } from 'formik'
 import * as Yup from 'yup'
 import { RootState } from '@/store'
 import { fetchGuests } from '@/store/actions/userActions'
-import { fetchRooms } from '@/store/actions/roomActions'
+import { fetchReservation, fetchRooms } from '@/store/actions/roomActions'
 import FormikInput from '@/components/app/FormikField'
 import { Button } from '@/components/button'
-import { Checkbox, CheckboxField } from '@/components/checkbox'
+import { Checkbox, CheckboxField, CheckboxGroup } from '@/components/checkbox'
 import { Divider } from '@/components/divider'
-import { Field, Label } from '@/components/fieldset'
-import { Heading } from '@/components/heading'
+import { Field, Fieldset, Label, Legend } from '@/components/fieldset'
+import { Heading, Subheading } from '@/components/heading'
 import { Select } from '@/components/select'
 import LoadingComp from '../../../Loading'
 import { ChevronLeftIcon } from '@heroicons/react/20/solid'
 import Link from 'next/link'
+import GuestSelectCombobox from '@/components/app/GuestCombo'
 
 interface Props {
     id?: string // optional, for edit mode
+}
+
+function classNames(...classes) {
+    return classes.filter(Boolean).join(' ')
 }
 
 export default function CreateReserve({ id }: Props) {
@@ -29,38 +33,28 @@ export default function CreateReserve({ id }: Props) {
     const dispatch = useDispatch()
 
     const [loading, setLoading] = useState(true)
-    const [reservationData, setReservationData] = useState<any>(null)
+    // const [reservationData, setReservationData] = useState<any>(null)
     const isEditMode = !!id
 
     useEffect(() => {
-        const loadInitialData = async () => {
-            await dispatch(fetchGuests())
-            await dispatch(fetchRooms())
+        dispatch(fetchReservation(id));
+    }, [id])
 
-            if (isEditMode) {
-                try {
-                    const res = await fetch(`/api/reservations/${id}`)
-                    const data = await res.json()
-                    setReservationData(data)
-                } catch (err) {
-                    console.error('Failed to fetch reservation data', err)
-                }
-            }
+    useEffect(() => {
+        dispatch(fetchRooms());
+        dispatch(fetchGuests()).then(() => setLoading(false));
+    }, [dispatch])
 
-            setLoading(false)
-        }
+    const guests = useSelector((state: RootState) => state?.user?.guests?.data);
 
-        loadInitialData()
-    }, [dispatch, id, isEditMode])
-
-    const guests = useSelector((state: RootState) => state?.user?.guests?.data || [])
     const rooms = useSelector((state: RootState) => state?.room?.rooms?.data || [])
+    const reservation = useSelector((state: RootState) => state?.room?.selected_reservation);
 
     const handleSubmit = async (values: any) => {
         setLoading(true)
 
         const method = isEditMode ? 'PATCH' : 'POST'
-        const url = isEditMode ? `/api/reservations/${id}` : 'api'
+        const url = isEditMode ? `api/action` : 'api'
 
         const body = {
             guestId: values.guestId,
@@ -84,9 +78,7 @@ export default function CreateReserve({ id }: Props) {
                 },
                 body: JSON.stringify(body),
             })
-
             if (!response.ok) throw new Error('Failed to save reservation')
-
             router.push('/frontdesk/reservations')
         } catch (error) {
             console.error('Error:', error)
@@ -95,24 +87,27 @@ export default function CreateReserve({ id }: Props) {
             setLoading(false)
         }
     }
+    const selectedGuest = guests?.find(g => g.id === reservation?.guestId)
+    console.log('selectedGuest:', selectedGuest)
 
     if (loading) return <LoadingComp />
 
     return (
         <Formik
-            enableReinitialize
+            enableReinitialize={true}
             initialValues={{
-                guestId: reservationData?.guestId || '',
-                roomId: reservationData?.roomId || '',
-                checkInDate: reservationData?.checkInDate?.slice(0, 10) || '',
-                checkOutDate: reservationData?.checkOutDate?.slice(0, 10) || '',
-                adults: reservationData?.adults || '',
-                children: reservationData?.children || '',
-                extraBed: reservationData?.extraBed || false,
-                bookedBy: reservationData?.bookedBy || '',
-                receptionist: reservationData?.receptionist || '',
-                dutyManager: reservationData?.dutyManager || '',
-                status: reservationData?.status || 'PENDING',
+                guestId: reservation?.guestId || '',
+                guest: selectedGuest || '',//get all details of the guest
+                roomId: reservation?.roomId || '',
+                checkInDate: reservation?.checkInDate?.slice(0, 10) || '',
+                checkOutDate: reservation?.checkOutDate?.slice(0, 10) || '',
+                adults: reservation?.adults || '',
+                children: reservation?.children || '',
+                extraBed: reservation?.extraBed || false,
+                bookedBy: reservation?.bookedBy || '',
+                receptionist: reservation?.receptionist || '',
+                dutyManager: reservation?.dutyManager || '',
+                status: reservation?.status || 'PENDING',
                 signature: '',
             }}
             validationSchema={Yup.object().shape({
@@ -122,13 +117,8 @@ export default function CreateReserve({ id }: Props) {
                 checkOutDate: Yup.date()
                     .required('Check-out date is required')
                     .min(Yup.ref('checkInDate'), 'Check-out must be after check-in'),
-                adults: Yup.string()
-                    .required('Number of adults is required')
-                    .matches(/^\d+$/, 'Adults must be a number')
-                    .min(1, 'At least one adult is required'),
-                children: Yup.string().min(0, 'Number of children cannot be negative')
-                    .matches(/^\d+$/, 'Adults must be a number')
-                    .nullable(),
+                adults: Yup.number().required('Required').min(1, 'At least one adult'),
+                children: Yup.number().min(0, 'Cannot be negative'),
                 extraBed: Yup.boolean(),
                 bookedBy: Yup.string().required('Booked by is required'),
                 receptionist: Yup.string().required('Receptionist is required'),
@@ -138,12 +128,10 @@ export default function CreateReserve({ id }: Props) {
                 signature: Yup.string(),
             })}
             onSubmit={handleSubmit}
-            validateOnBlur
-            validateOnChange
         >
             {({ handleSubmit, handleChange, isSubmitting, errors, touched, values, resetForm }) => (
                 <form onSubmit={handleSubmit} className="mx-auto max-w-4xl">
-                    <Heading>{isEditMode ? 'Edit Reservation' : 'Create Reservation'}</Heading>
+                    <Heading>{isEditMode ? 'Reservation Form ' : 'Reservation Form'}</Heading>
 
                     <div className="max-lg:hidden mb-4">
                         <Link
@@ -183,6 +171,15 @@ export default function CreateReserve({ id }: Props) {
                         </Field>
                         <Field>
                             <Label>Guest</Label>
+                            {/* {guests?.length > 0 ? (
+                                <GuestSelectCombobox
+                                    name="guestId"
+                                    options={guests}
+                                    displayValue={(g) => g?.firstName}
+                                />
+                            ) : (
+                                <p className="text-sm text-zinc-500">Loading guests...</p>
+                            )} */}
                             <Select name="guestId" value={values.guestId} onChange={handleChange}>
                                 <option value="">Select Guest</option>
                                 {guests.map((guest) => (
@@ -193,6 +190,119 @@ export default function CreateReserve({ id }: Props) {
                             </Select>
                         </Field>
                     </section>
+
+                    <Divider className="my-5" soft />
+
+                    {/* show selected guest  */}
+
+
+                    <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
+                        <FormikInput label="First Name" name="guest.firstName" type="text" disabled />
+                        <FormikInput label="Last Name" name="guest.lastName" type="text" disabled />
+                    </section>
+
+                    <Divider className="my-5" soft />
+
+                    <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
+                        <FormikInput label="Email" name="guest.email" type="email" disabled />
+                        <FormikInput label="Phone Number" name="guest.phoneNumber" type="text" disabled />
+                    </section>
+
+                    <Divider className="my-5" soft />
+
+                    <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
+                        <FormikInput label="Company" name="guest.company" type="text" disabled />
+                        <FormikInput label="Address" name="guest.address" type="text" disabled />
+                    </section>
+
+                    <Divider className="my-5" soft />
+
+                    <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
+                        <FormikInput label="ID No" name="guest.idNo" type="text" disabled />
+                        <FormikInput label="City" name="guest.city" type="text" disabled />
+                        <FormikInput label="Province" name="guest.province" type="text" disabled />
+                        <FormikInput label="Country" name="guest.country" type="text" disabled />
+                    </section>
+                    <Divider className="my-5" soft />
+
+                    <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
+                        <Fieldset>
+                            <Legend>Purpose</Legend>
+                            {/* <Text>Purpose of guest visit.</Text> */}
+                            <CheckboxGroup>
+                                <Field className='gap-2 flex items-center'>
+                                    <input
+                                        id="purpose_tourist"
+                                        name="purpose_tourist"
+                                        type="checkbox"
+                                        onChange={handleChange}
+                                        checked={values.guest.purpose_tourist}
+                                        className="form-checkbox"
+                                    />
+                                    <Label htmlFor="purpose_tourist">Tourism</Label>
+                                </Field>
+                                <Field className='gap-2 flex items-center'>
+                                    <input
+                                        id="purpose_conference"
+                                        name="purpose_conference"
+                                        type="checkbox"
+                                        onChange={handleChange}
+                                        checked={values.guest.purpose_conference}
+                                        className="form-checkbox"
+                                    />
+                                    <Label htmlFor="purpose_conference">Conference</Label>
+                                </Field>
+                                <Field className='gap-2 flex items-center'>
+                                    <input
+                                        id="purpose_group"
+                                        name="purpose_group"
+                                        type="checkbox"
+                                        onChange={handleChange}
+                                        checked={values.guest.purpose_group}
+                                        className="form-checkbox"
+                                    />
+                                    <Label htmlFor="purpose_group">Group</Label>
+                                </Field>
+                                <Field className='gap-2 flex items-center'>
+                                    <input
+                                        id="purpose_business"
+                                        name="purpose_business"
+                                        type="checkbox"
+                                        onChange={handleChange}
+                                        checked={values.guest.purpose_business}
+                                        className="form-checkbox"
+                                    />
+                                    <Label htmlFor="purpose_business">Business</Label>
+                                </Field>
+                            </CheckboxGroup>
+                        </Fieldset>
+
+                        <div className="space-y-6">
+                            <Field>
+                                <Label>Payment Method</Label>
+                                <Select name="guest.paymentMethod">
+                                    <option value="CASH">Cash</option>
+                                    <option value="COMPANY">Company</option>
+                                    <option value="CARD">Card</option>
+                                </Select>
+                            </Field>
+                            <FormikInput label="guest.Signature" name="signature" type="text" />
+                        </div>
+                    </section>
+
+                    <div className='mt-5'>
+                        <Subheading>Terms and Conditions</Subheading>
+                        <ul>
+                            <li>Check in is from 1400 hrs</li>
+                            <li>Check out is at 1100 hrs</li>
+                            <li>Late check out is only permitted with management consent</li>
+                            <li>Guests may not leave without full payment of services rendered unless permitted by management</li>
+                            <li>Pets are not allowed on the premises</li>
+                            <li>In-house guest may only cancel next day booking the night prior to checking out</li>
+                            <li>No in-room parties allowed</li>
+                        </ul>
+                    </div>
+
 
                     <Divider className="my-5" soft />
 
@@ -209,16 +319,27 @@ export default function CreateReserve({ id }: Props) {
                     <Divider className="my-5" soft />
 
                     <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
-                        <FormikInput label="Adults" name="adults" type="text" />
-                        <FormikInput label="Children" name="children" type="text" />
+                        <FormikInput label="Adults" name="adults" type="number" />
+                        <FormikInput label="Children" name="children" type="number" />
                     </section>
 
                     <Divider className="my-5" soft />
 
                     <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
                         <CheckboxField>
-                            <Checkbox name="extraBed" />
-                            <Label>Extra Bed</Label>
+                            {/* <Checkbox name="extraBed" />
+                            <Label>Extra Bed</Label> */}
+                            <Field className='gap-2 flex items-center'>
+                                <input
+                                    id="extraBed"
+                                    name="extraBed"
+                                    type="checkbox"
+                                    onChange={handleChange}
+                                    checked={values.extraBed}
+                                    className="form-checkbox"
+                                />
+                                <Label htmlFor="extraBed">Business</Label>
+                            </Field>
                         </CheckboxField>
                     </section>
 

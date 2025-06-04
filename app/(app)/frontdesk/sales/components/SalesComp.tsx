@@ -17,8 +17,8 @@ import { fetchOrders, SetPosStats } from '@/store/actions/paymentAction'
 import { fetchPublicProductList } from '@/store/actions/productsActions'
 import { CheckIcon, ChevronDownIcon, ClockIcon, QuestionMarkCircleIcon, TrashIcon } from '@heroicons/react/20/solid'
 import { Combobox, ComboboxDescription, ComboboxLabel, ComboboxOption } from '@/components/combobox'
-import GuestSelectCombobox from './GuestCombo'
 import { useRouter } from 'next/navigation'
+import GuestSelectCombobox from '@/components/app/GuestCombo'
 
 
 function classNames(...classes) {
@@ -114,6 +114,8 @@ export default function SalesComp() {
             </div>
 
             <Formik
+                enableReinitialize
+
                 initialValues={{
                     id: order?.id || '',
                     // userId: order?.userId || '',
@@ -175,8 +177,7 @@ export default function SalesComp() {
                     } finally {
                         setSubmitting(false);
                     }
-                }}
-
+                }} 
 
             >
 
@@ -214,7 +215,7 @@ export default function SalesComp() {
                                             }
                                             setFieldValue('orderItems', updatedItems);
                                         }}>
-                                            <img alt={product.imageAlt} src={`https://hungrylion.co.zm/wp-content/uploads/2023/08/WEBSITE-FOMO-FOR-ONE_1080x1080px.webp`} className="w-fit h-fit object-cover rounded-md" />
+                                            <img alt={product.thumb} src={product.thumb} className="w-fit h-fit object-cover rounded-md" />
                                             <h3 className="mt-4 text-sm text-gray-700">
                                                 <a href={product.href}>
                                                     <span className="absolute inset-0" />
@@ -257,7 +258,7 @@ export default function SalesComp() {
                                         const product = products.find(p => p.id === item.productId);
                                         return (
                                             <div key={item.productId} className="col border-b border-gray-200 py-6 flex items-center gap-x-4 lg:gap-x-6">
-                                                <img alt={product.imageAlt} src={`https://hungrylion.co.zm/wp-content/uploads/2023/08/WEBSITE-FOMO-FOR-ONE_1080x1080px.webp`} className="w-10 object-cover" />
+                                                <img alt={product.thumb} src={product.thumb} className="w-10 object-cover" />
 
                                                 <div className='w-full flex flex-col gap-2'>
 
