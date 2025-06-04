@@ -75,7 +75,7 @@ export async function GET(req: NextRequest) {
         where: whereClause,
         skip,
         take: limit,
-        orderBy: { id: "desc" },
+        orderBy: { number: "asc" },
       }),
       prisma.room.count({ where: whereClause }),
     ]);
@@ -118,7 +118,7 @@ export async function POST(req: Request) {
     }
 
     const processedInput = {
-      number: number,
+      number: parseInt(number),
       type: type,
       pricePerNight: parseFloat(pricePerNight),
       status: status,

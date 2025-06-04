@@ -130,7 +130,7 @@ export default function ApplicationLayout({ children }: { children: React.ReactN
                 <SidebarLabel>Reservations</SidebarLabel>
               </SidebarItem>
 
-              <SidebarItem href="/frontdesk/reservations" current={pathname === '/frontdesk/reservations'}>
+              <SidebarItem href="/frontdesk/products" current={pathname === '/frontdesk/products'}>
                 <ShoppingCartIcon  />
                 <SidebarLabel>Products</SidebarLabel>
               </SidebarItem>
