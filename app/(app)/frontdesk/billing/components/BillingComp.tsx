@@ -16,6 +16,7 @@ import { RootState } from '@/store'
 import LoadingComp from '../../Loading'
 import { fetchBills, fetchPos } from '@/store/actions/paymentAction'
 import { fetchReservations } from '@/store/actions/roomActions'
+import GuestSelectCombobox from '@/components/app/GuestCombo'
 
 export default function BillingComp() {
     const dispatch = useDispatch();
@@ -132,8 +133,12 @@ export default function BillingComp() {
 
                                     <Field >
                                         <Label>Reservation</Label>
+                                        {/* <GuestSelectCombobox 
+                                            name="reservationId"
+                                            options={reservations?.data}
+                                            displayValue={(guest) => `${guest.room.number} - ${guest.guest.firstName} ${guest.guest.lastName}`}
+                                        /> */}
                                         <Select name="reservationId" onChange={handleChange} value={values.reservationId}>
-                                            {/* Replace these options with actual guests dynamically */}
                                             <option value="">Select Reservation</option>
                                             {reservations?.data?.map((g) => (
                                                 <option key={g.id} value={g.id}>

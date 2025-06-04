@@ -242,19 +242,6 @@ export default function CreateGuest({ id }: Props) {
 
                     <Divider className="my-5" soft />
 
-                    <div>
-                        <Subheading>Terms and Conditions</Subheading>
-                        <ul>
-                            <li>Check in is from 1400 hrs</li>
-                            <li>Check out is at 1100 hrs</li>
-                            <li>Late check out is only permitted with management consent</li>
-                            <li>Guests may not leave without full payment of services rendered unless permitted by management</li>
-                            <li>Pets are not allowed on the premises</li>
-                            <li>In-house guest may only cancel next day booking the night prior to checking out</li>
-                            <li>No in-room parties allowed</li> 
-                        </ul> 
-                    </div>
-
                     {/* Actions */}
                     <div className="flex justify-end gap-4">
                         <Button type="reset" plain>Reset</Button>
