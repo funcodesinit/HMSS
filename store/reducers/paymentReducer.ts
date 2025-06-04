@@ -49,6 +49,13 @@ export const paymentReducer = (state = initialState, { type, payload }) => {
             return { ...state, selected_bill: payload };
         case ActionTypes.SET_POS_STATS:
             return { ...state, stats: payload };
+        
+        case ActionTypes.SET_ORDERS:
+            return { ...state, orders: payload, selected_order: null };
+
+        case ActionTypes.SET_SELECTED_ORDER:
+            return { ...state, selected_order: payload };
+            
         default:
             return state;
     }
