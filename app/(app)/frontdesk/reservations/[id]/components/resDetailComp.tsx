@@ -215,10 +215,7 @@ const ResDetailComp = ({ id }: Props) => {
                         </div>
                     </div>
                 </div>
-
-
             </div>
-
         </>
     )
 }
