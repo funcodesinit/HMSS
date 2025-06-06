@@ -46,13 +46,17 @@ import {
   Square2StackIcon,
   TicketIcon,
 } from '@heroicons/react/20/solid'
+import { useSession } from 'next-auth/react'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 
 
 export default function ApplicationLayout({ children }: { children: React.ReactNode }) {
     let pathname = usePathname()
-  
+    const {data:session} = useSession()
+    const user = session?.user || {}
+
+
   return (
     <SidebarLayout
       navbar={
@@ -174,11 +178,11 @@ export default function ApplicationLayout({ children }: { children: React.ReactN
             <Dropdown>
               <DropdownButton as={SidebarItem}>
                 <span className="flex min-w-0 items-center gap-3">
-                  <Avatar src="/profile-photo.jpg" className="size-10" square alt="" />
+                  {/* <Avatar src="/profile-photo.jpg" className="size-10" square alt="" /> */}
                   <span className="min-w-0">
-                    <span className="block truncate text-sm/5 font-medium text-zinc-950 dark:text-white">Erica</span>
+                    <span className="block truncate text-sm/5 font-medium text-zinc-950 dark:text-white">{user?.firstName||''} {user?.lastName||''}</span>
                     <span className="block truncate text-xs/5 font-normal text-zinc-500 dark:text-zinc-400">
-                      erica@example.com
+                      {user?.email ||'looading...'}
                     </span>
                   </span>
                 </span>
@@ -197,7 +201,7 @@ export default function ApplicationLayout({ children }: { children: React.ReactN
                 </DropdownItem>
               
                 <DropdownDivider />
-                <DropdownItem href="/logout">
+                <DropdownItem href="/api/auth/signout">
                   <ArrowRightStartOnRectangleIcon />
                   <DropdownLabel>Sign out</DropdownLabel>
                 </DropdownItem>

@@ -215,7 +215,7 @@ export default function SalesComp() {
                                             }
                                             setFieldValue('orderItems', updatedItems);
                                         }}>
-                                            <img alt={product.thumb} src={product.thumb} className="w-fit h-fit object-cover rounded-md" />
+                                            <img alt={product.thumb} src={product.thumb||'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSLkN4VsHXmLN4YHMbn5TJyPO0_SgQWvx8aQmJyJpvaTHaONr52X-T0WmR8QR_JXZmmrww&usqp=CAU'} className="w-fit h-fit object-cover rounded-md" />
                                             <h3 className="mt-4 text-sm text-gray-700">
                                                 <a href={product.href}>
                                                     <span className="absolute inset-0" />

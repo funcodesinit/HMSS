@@ -181,7 +181,7 @@ export async function POST(req: Request) {
 
 
     const processedInput = {
-      thumb: thumbUrl,
+      // thumb: thumbUrl,
       name,
       description,
       price: priceNum,

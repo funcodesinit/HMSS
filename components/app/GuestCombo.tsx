@@ -11,6 +11,7 @@
         displayValue={displayValue}
         value={options.find((g) => g.id === field.value) || null}
         onChange={(guest) => helpers.setValue(guest?.id || '')}
+        defaultValue={options[0]}
       >
         {(guests) => (
           <ComboboxOption value={guests}>

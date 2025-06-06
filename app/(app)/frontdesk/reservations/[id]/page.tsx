@@ -1,9 +1,9 @@
 import React from 'react'
 import { Metadata } from 'next'
-import CreateReserve from '../action/components/CreateComp';
+import ResDetailComp from './components/resDetailComp';
 
 export const metadata: Metadata = {
-  title: 'Create reservation',
+  title: 'view reservation',
 }
 
 interface PageProps {
@@ -12,6 +12,6 @@ interface PageProps {
 
 
 export default async function page({ params }: PageProps) {
-     const { id } = await params; 
-  return <CreateReserve id={id} />
+  const { id } = await params;
+  return <ResDetailComp id={id} />
 }   

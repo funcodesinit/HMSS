@@ -1,125 +1,3 @@
-// // Created by kev, 2023-10-05 12:00:00
-// 'use client'
-// import React, { useState, useEffect } from 'react'
-// import { useRouter } from 'next/navigation'
-// import { useDispatch, useSelector } from 'react-redux'
-// import { Field as Fieldz, Formik } from 'formik'
-// import * as Yup from 'yup'
-// import { RootState } from '@/store'
-// import { fetchGuests } from '@/store/actions/userActions'
-// import { fetchReservation, fetchRooms } from '@/store/actions/roomActions'
-// import FormikInput from '@/components/app/FormikField'
-// import { Button } from '@/components/button'
-// import { Checkbox, CheckboxField, CheckboxGroup } from '@/components/checkbox'
-// import { Divider } from '@/components/divider'
-// import { Field, Fieldset, Label, Legend } from '@/components/fieldset'
-// import { Heading, Subheading } from '@/components/heading'
-// import { Select } from '@/components/select'
-// import LoadingComp from '../../../Loading'
-// import { ChevronLeftIcon } from '@heroicons/react/20/solid'
-// import Link from 'next/link'
-// import GuestSelectCombobox from '@/components/app/GuestCombo'
-
-
-
-
-
-// export default function CreateReserve({ id }: Props) {
-
-
-//     const [loading, setLoading] = useState(true)
-//     // const [reservationData, setReservationData] = useState<any>(null)
-//     const isEditMode = !!id
-
-//     
-
-
-
-
-//     const reservation = useSelector((state: RootState) => state?.room?.selected_reservation);
-
-
-//     const selectedGuest = guests?.find(g => g.id === reservation?.guestId)
-//     console.log('selectedGuest:', selectedGuest)
-
-//     if (loading) return <LoadingComp />
-
-//     return (
-//         <Formik
-//             enableReinitialize={true}
-//             initialValues={{
-//                 guestId: reservation?.guestId || '',
-//                 guest: selectedGuest || '',//get all details of the guest
-//                 roomId: reservation?.roomId || '',
-//                 checkInDate: reservation?.checkInDate?.slice(0, 10) || '',
-//                 checkOutDate: reservation?.checkOutDate?.slice(0, 10) || '',
-//                 adults: reservation?.adults || '',
-//                 children: reservation?.children || '',
-//                 extraBed: reservation?.extraBed || false,
-//                 bookedBy: reservation?.bookedBy || '',
-//                 receptionist: reservation?.receptionist || '',
-//                 dutyManager: reservation?.dutyManager || '',
-//                 status: reservation?.status || 'PENDING',
-//                 purpose_tourist: reservation?.purpose_tourist || false,
-//                 purpose_conference: reservation?.purpose_conference || false,
-//                 purpose_group: reservation?.purpose_group || false,
-//                 purpose_business: reservation?.purpose_business || false,
-//                 paymentMethod: reservation?.paymentMethod || 'CASH',
-//                 signature: '',
-//             }}
-//             validationSchema={Yup.object().shape({
-//                 guestId: Yup.string().required('Guest is required'),
-//                 roomId: Yup.string().required('Room is required'),
-//                 checkInDate: Yup.date().required('Check-in date is required'),
-//                 checkOutDate: Yup.date()
-//                     .required('Check-out date is required')
-//                     .min(Yup.ref('checkInDate'), 'Check-out must be after check-in'),
-//                 adults: Yup.number().required('Required').min(1, 'At least one adult'),
-//                 children: Yup.number().min(0, 'Cannot be negative'),
-//                 extraBed: Yup.boolean(),
-//                 bookedBy: Yup.string().required('Booked by is required'),
-//                 receptionist: Yup.string().required('Receptionist is required'),
-//                 dutyManager: Yup.string().required('Duty manager is required'),
-//                 status: Yup.string()
-//                     .oneOf(['PENDING', 'CONFIRMED', 'CHECKED_IN', 'CHECKED_OUT', 'CANCELLED']),
-//                 paymentMethod: Yup.string().oneOf(['CASH', 'COMPANY', 'CARD', ]),
-//                 signature: Yup.string(),
-//             })}
-//             onSubmit={handleSubmit}
-//         >
-//             {({ handleSubmit, handleChange, isSubmitting, errors, touched, values, resetForm }) => (
-//                 <form onSubmit={handleSubmit} className="mx-auto max-w-4xl">
-//                  
-
-
-
-
-
-
-//                     </section>
-
-//                     <Divider className="my-5" soft />
-
-//                     {/* show selected guest  */}
-
-
-
-
-
-
-
-
-
-
-
-
-//                 </form>
-//             )}
-//         </Formik>
-//     )
-// }
-
-
 'use client'
 import { Button } from '@/components/button'
 import { Heading, Subheading } from '@/components/heading'
@@ -127,7 +5,7 @@ import { ChevronLeftIcon } from '@heroicons/react/16/solid'
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
 import LoadingComp from '../../../Loading'
-import { fetchRooms } from '@/store/actions/roomActions'
+import { fetchReservation, fetchRooms } from '@/store/actions/roomActions'
 import { fetchGuests } from '@/store/actions/userActions'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -153,26 +31,29 @@ function classNames(...classes) {
 export default function CreateReserve({ id }: Props) {
     const router = useRouter()
     const dispatch = useDispatch()
+    const isEditMode = !!id
     const [loading, setLoading] = useState(true)
+
+    useEffect(() => {
+        dispatch(fetchReservation(id));
+    }, [id])
 
     useEffect(() => {
         dispatch(fetchRooms());
         dispatch(fetchGuests()).then(() => setLoading(false));
     }, [dispatch])
 
-    const isEditMode = !!id
 
-    useEffect(() => {
-         dispatch(fetchReservation(id));
-     }, [id])
 
     const rooms = useSelector((state: RootState) => state?.room?.rooms?.data)
     const guests = useSelector((state: RootState) => state?.user?.guests?.data);
+    const reservation = useSelector((state: RootState) => state?.room?.selected_reservation)
+
     const handleSubmit = async (values: any) => {
         setLoading(true)
 
         const method = isEditMode ? 'PATCH' : 'POST'
-        const url = isEditMode ? `api/action` : 'api'
+        const url = isEditMode ? `/frontdesk/reservations/${id}/api` : '/frontdesk/reservations/api'
 
         const body = {
             guestId: values.guestId,
@@ -180,12 +61,18 @@ export default function CreateReserve({ id }: Props) {
             checkInDate: values.checkInDate,
             checkOutDate: values.checkOutDate,
             adults: values.adults,
-            children: values.children,
+            child: values.child,
             extraBed: values.extraBed,
             bookedBy: values.bookedBy,
             receptionist: values.receptionist,
             dutyManager: values.dutyManager,
+            purpose_tourist: values.purpose_tourist,
+            purpose_conference: values.purpose_conference,
+            purpose_group: values.purpose_group,
+            purpose_business: values.purpose_business,
+            paymentMethod: values.paymentMethod,
             status: values.status,
+            // signature: values.signature,
         }
 
         try {
@@ -213,9 +100,7 @@ export default function CreateReserve({ id }: Props) {
         <div>
             <div className='flex items-center justify-between mb-4'>
                 <Heading>{isEditMode ? 'Reservation Form ' : 'Reservation Form'}</Heading>
-                <Button>
-                    Print
-                </Button>
+               
             </div>
 
             <div className="max-lg:hidden mb-4">
@@ -229,24 +114,24 @@ export default function CreateReserve({ id }: Props) {
             </div>
             <Formik
                 initialValues={{
-                    guestId: '',
+                    guestId: reservation?.guestId || '',
                     guest: null,
-                    roomId: '',
-                    checkInDate: '',
-                    checkOutDate: '',
-                    adults: '',
-                    child: '',
-                    extraBed: false,
-                    bookedBy: '',
-                    receptionist: '',
-                    dutyManager: '',
-                    status: 'PENDING',
-                    purpose_tourist: false,
-                    purpose_conference: false,
-                    purpose_group: false,
-                    purpose_business: false,
-                    paymentMethod: 'CASH',
-                    signature: '',
+                    roomId: reservation?.roomId || '',
+                    checkInDate: reservation?.checkInDate.slice(0, 10) || '',
+                    checkOutDate: reservation?.checkOutDate.slice(0, 10) || '',
+                    adults:  reservation?.adults || '1',
+                    child: reservation?.children || '0',
+                    extraBed: reservation?.extraBed || false,
+                    bookedBy: reservation?.bookedBy || '',
+                    receptionist: reservation?.receiptionist || '',
+                    dutyManager:  reservation?.dutyManager || '',
+                    status: reservation?.status || 'PENDING',
+                    purpose_tourist:  reservation?.purpose_tourist || false,
+                    purpose_conference: reservation?.purpose_conference || false,
+                    purpose_group:reservation?.purpose_group ||  false,
+                    purpose_business: reservation?.purpose_business || false,
+                    paymentMethod: reservation?.paymentMethod || 'CASH',
+                    // signature: reservation?.signature || '',
                 }}
                 validationSchema={Yup.object().shape({
                     guestId: Yup.string().required('Guest is required'),
@@ -255,8 +140,8 @@ export default function CreateReserve({ id }: Props) {
                     checkOutDate: Yup.date()
                         .required('Check-out date is required')
                         .min(Yup.ref('checkInDate'), 'Check-out must be after check-in'),
-                    adults: Yup.number(),
-                    child: Yup.number(),
+                    adults: Yup.string(),
+                    child: Yup.string(),
                     extraBed: Yup.boolean(),
                     bookedBy: Yup.string().required('Booked by is required'),
                     receptionist: Yup.string().required('Receptionist is required'),
@@ -264,7 +149,7 @@ export default function CreateReserve({ id }: Props) {
                     status: Yup.string()
                         .oneOf(['PENDING', 'CONFIRMED', 'CHECKED_IN', 'CHECKED_OUT', 'CANCELLED']),
                     paymentMethod: Yup.string().oneOf(['CASH', 'COMPANY', 'CARD']),
-                    signature: Yup.string(),
+                    // signature: Yup.string(),
                 })}
                 onSubmit={handleSubmit}
             >
@@ -278,7 +163,7 @@ export default function CreateReserve({ id }: Props) {
                     }, [values.guestId, guests, setFieldValue]);
 
                     return (
-                        <form onSubmit={handleSubmit} className="mx-auto max-w-4xl">
+                        <form onSubmit={handleSubmit} className="w-full max-w-4xl">
                             <Divider className="my-5 mt-6" />
 
                             {Object.keys(errors).length > 0 && (
@@ -313,7 +198,7 @@ export default function CreateReserve({ id }: Props) {
                                         <GuestSelectCombobox
                                             name="guestId"
                                             options={guests}
-                                            displayValue={(g) => `${g?.firstName} ${g?.lastName}`}
+                                            displayValue={(g) => `${g?.firstName}`}
                                         />
                                     ) : (
                                         <p className="text-sm text-zinc-500">Loading guests...</p>
@@ -420,8 +305,8 @@ export default function CreateReserve({ id }: Props) {
                             <div className='mt-5'>
                                 <Subheading>Terms and Conditions</Subheading>
                                 <ul>
-                                    <li>Check in is from 1400 hrs</li>
-                                    <li>Check out is at 1100 hrs</li>
+                                    <li>Check in is from 14 00 hrs</li>
+                                    <li>Check out is at 11 00 hrs</li>
                                     <li>Late check out is only permitted with management consent</li>
                                     <li>Guests may not leave without full payment of services rendered unless permitted by management</li>
                                     <li>Pets are not allowed on the premises</li>
@@ -459,7 +344,7 @@ export default function CreateReserve({ id }: Props) {
                                                 name="extraBed"
                                                 type="checkbox"
                                                 onChange={handleChange}
-                                                checked={values?.purpose_tourist}
+                                                checked={values?.extraBed}
                                                 className="form-checkbox"
                                             />
                                             <Label htmlFor="extraBed">extra Bed</Label>
