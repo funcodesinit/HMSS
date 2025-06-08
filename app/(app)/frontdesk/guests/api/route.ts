@@ -121,9 +121,8 @@ export async function POST(req: Request) {
       guest
     }, { status: 201 });
 
-  } catch (err) {
-    console.log("Error creating guest:", err);
-    return NextResponse.json({ error: err.message || "Internal server error" }, { status: 500 }); 
+  } catch (error:any) {
+    return NextResponse.json({ error: error?.message || "Internal server error" }, { status: 500 }); 
   }
 
 

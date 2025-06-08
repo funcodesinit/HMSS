@@ -79,7 +79,6 @@ export async function GET(req: NextRequest) {
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error fetching rooms:", error);
     return NextResponse.json(
       { error: "Failed to fetch rooms" },
       { status: 500 }
@@ -119,9 +118,8 @@ export async function POST(req: Request) {
       room
     }, { status: 201 });
 
-  } catch (err) {
-    console.log("Error creating guest:", err);
-    return NextResponse.json({ error: err.message || "Internal server error" }, { status: 500 });
+  } catch (error:any) {
+    return NextResponse.json({ error: error?.message || "Internal server error" }, { status: 500 });
 
   }
 

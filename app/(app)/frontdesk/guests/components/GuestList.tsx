@@ -34,12 +34,11 @@ export default function CustomerListComp() {
   useEffect(() => {
     const filters = { page, limit, search, city, country, company }
     setLoading(true)
-    dispatch(fetchGuests(filters)).finally(() => setLoading(false))
+    dispatch(fetchGuests(filters) as any).finally(() => setLoading(false))
   }, [page, search, city, country, company])
 
   const guests = useSelector((state: RootState) => state.user.guests)
   const totalGuests = useSelector((state: RootState) => state?.user?.guests?.pagination?.total)
-
 
   const totalPages = Math.ceil(totalGuests / limit)
   console.log('totalPages:',totalPages,totalGuests,limit)

@@ -74,8 +74,7 @@ export async function GET(req: NextRequest) {
       totalPages: Math.ceil(total / limit),
       total,
     });
-  } catch (error) {
-    console.error('[GET /reservations]', error);
+  } catch (error:any) {
     return NextResponse.json({ error: 'Failed to fetch reservations' }, { status: 500 });
   }
 }
@@ -106,8 +105,7 @@ export async function POST(req: NextRequest) {
     });
 
     return NextResponse.json(reservation, { status: 201 });
-  } catch (error) {
-    console.error('[POST /reservations]', error);
+  } catch (error:any) {
     return NextResponse.json({ error: 'Failed to create reservation' }, { status: 400 });
   }
 }
