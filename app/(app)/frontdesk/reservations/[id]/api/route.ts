@@ -4,7 +4,7 @@ import { auth } from "@/auth";
 
  
 
-export async function GET(req: Request, context: { params: { id: string } } ) {
+export async function GET(req: Request,  { params }: { params: Promise<{ id: string }> }) {
   try {
 
     const session = await auth();
@@ -12,7 +12,7 @@ export async function GET(req: Request, context: { params: { id: string } } ) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-     const  id  = context.params.id;
+    const { id } = await params;
     // if (isNaN(id) || id <= 0) {
     //   return NextResponse.json({ error: 'Invalid Order Id' }, { status: 400 });
     // }
