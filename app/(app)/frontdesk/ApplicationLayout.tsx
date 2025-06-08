@@ -178,9 +178,8 @@ export default function ApplicationLayout({ children }: { children: React.ReactN
             <Dropdown>
               <DropdownButton as={SidebarItem}>
                 <span className="flex min-w-0 items-center gap-3">
-                  {/* <Avatar src="/profile-photo.jpg" className="size-10" square alt="" /> */}
                   <span className="min-w-0">
-                    <span className="block truncate text-sm/5 font-medium text-zinc-950 dark:text-white">{user?.firstName||''} {user?.lastName||''}</span>
+                    //add firstName and lastName to user object
                     <span className="block truncate text-xs/5 font-normal text-zinc-500 dark:text-zinc-400">
                       {user?.email ||'looading...'}
                     </span>
@@ -189,7 +188,7 @@ export default function ApplicationLayout({ children }: { children: React.ReactN
                 <ChevronUpIcon />
               </DropdownButton>
               <DropdownMenu className="min-w-64" anchor="top start">
-                <DropdownItem href="/my-profile">
+                {/* <DropdownItem href="/my-profile">
                   <UserIcon />
                   <DropdownLabel>My profile</DropdownLabel>
                 </DropdownItem>
@@ -198,7 +197,7 @@ export default function ApplicationLayout({ children }: { children: React.ReactN
                 <DropdownItem href="/privacy-policy">
                   <ShieldCheckIcon />
                   <DropdownLabel>Privacy policy</DropdownLabel>
-                </DropdownItem>
+                </DropdownItem> */}
               
                 <DropdownDivider />
                 <DropdownItem href="/api/auth/signout">
