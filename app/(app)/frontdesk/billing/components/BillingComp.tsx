@@ -212,8 +212,8 @@ export default function BillingComp() {
                             </TableCell>
                         </TableRow>
                     )}
-                    {bills?.map((order, idx) => (
-                        <TableRow key={idx} title={`Order #${order.id}`}>
+                    {bills?.map((order:any) => (
+                        <TableRow key={order?.id} title={`Order #${order.id}`}>
                             <TableCell>{order?.id}</TableCell>
                             <TableCell className="text-zinc-500">{order?.reservation?.room?.number}</TableCell>
                             <TableCell>{order?.reservation?.guest?.firstName} {order?.reservation?.guest?.lastName}</TableCell>
