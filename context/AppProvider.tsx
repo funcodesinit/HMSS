@@ -1,5 +1,4 @@
 'use client';
-import { fetchAccountProfile } from "@/store/actions/userActions";
 import { useSession } from "next-auth/react";
 import { useState, useContext, createContext, useEffect } from "react";
 import { useDispatch } from "react-redux";
@@ -43,7 +42,6 @@ export const AppProvider = ({ children }) => {
 
   useEffect(() => {
     if (!id ) return undefined
-    dispatch(fetchAccountProfile(id))
   }, [dispatch, id ])
   
   const toggleLoading = () => {
