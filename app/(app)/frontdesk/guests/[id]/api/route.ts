@@ -50,12 +50,12 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
         city: body.city,
         province: body.province,
         country: body.country,
-        purpose_tourist: body.purpose_tourist,
-        purpose_conference: body.purpose_conference,
-        purpose_group: body.purpose_group,
-        purpose_business: body.purpose_business,
-        payment: body.paymentMethod,
-        signature: body.signature
+        // purpose_tourist: body.purpose_tourist,
+        // purpose_conference: body.purpose_conference,
+        // purpose_group: body.purpose_group,
+        // purpose_business: body.purpose_business,
+        // payment: body.paymentMethod,
+        // signature: body.signature
       },
     });
 
