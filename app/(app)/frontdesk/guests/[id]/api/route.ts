@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
 
- 
+
 export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
 
@@ -23,7 +23,6 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
     return NextResponse.json(guest, { status: 200 }
     );
   } catch (error) {
-    console.error("Error fetching guests:", error);
     return NextResponse.json(
       { error: "Failed to fetch guests" },
       { status: 500 }
@@ -33,7 +32,8 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
 
 export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const { id } = params;
+    const { id } = await params;
+
     const body = await req.json();
 
     const updatedGuest = await prisma.guest.update({
@@ -59,8 +59,8 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
     });
 
     return NextResponse.json({ success: true, guest: updatedGuest }, { status: 200 });
-  } catch (err) {
-    return NextResponse.json({ error: err.message || "Internal server error" }, { status: 500 });
+  } catch (error:any) {
+    return NextResponse.json({ error: error?.message || "Internal server error" }, { status: 500 });
   }
 }
 

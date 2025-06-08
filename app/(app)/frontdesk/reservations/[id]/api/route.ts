@@ -64,8 +64,8 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
     });
 
     return NextResponse.json({ success: true, guest: updatedGuest }, { status: 200 });
-  } catch (err) {
-    return NextResponse.json({ error: err.message || "Internal server error" }, { status: 500 });
+  } catch (error:any) {
+    return NextResponse.json({ error: error?.message || "Internal server error" }, { status: 500 });
   }
 }
 
