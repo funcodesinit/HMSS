@@ -46,7 +46,7 @@ export default function ReserveComp() {
       endDate
     }
 
-    dispatch(fetchReservations(filters)).finally(() => setLoading(false))
+    dispatch(fetchReservations(filters) as any).finally(() => setLoading(false))
   }, [dispatch, page, guest, room, status, startDate, endDate])
 
   const reservations = useSelector((state: RootState) => state.room.reservations)

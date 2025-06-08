@@ -28,7 +28,7 @@ export default function CustomerListComp() {
 
   useEffect(() => {
     setLoading(true)
-    dispatch(fetchGuests()).finally(() => setLoading(false))
+    dispatch(fetchGuests() as any).finally(() => setLoading(false))
   }, [dispatch ])
 
   useEffect(() => {

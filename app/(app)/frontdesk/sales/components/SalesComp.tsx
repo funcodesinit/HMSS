@@ -47,8 +47,8 @@ export default function SalesComp() {
     ];
 
     useEffect(() => {
-        dispatch(fetchGuests());
-        dispatch(fetchPublicProductList()).then(() => setLoading(false));
+        dispatch(fetchGuests() as any);
+        dispatch(fetchPublicProductList() as any).then(() => setLoading(false));
     }, [dispatch]);
 
     const guests = useSelector((state: RootState) => state?.user?.guests?.data);

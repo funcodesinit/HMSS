@@ -28,13 +28,13 @@ export default function UserListComp() {
 
   useEffect(() => {
     setLoading(true)
-    dispatch(fetchUsers()).finally(() => setLoading(false))
+    dispatch(fetchUsers() as any).finally(() => setLoading(false))
   }, [dispatch ])
 
   useEffect(() => {
     const filters = { page, limit, search, city, country, company }
     setLoading(true)
-    dispatch(fetchUsers(filters)).finally(() => setLoading(false))
+    dispatch(fetchUsers(filters) as any).finally(() => setLoading(false))
   }, [page, search, city, country, company])
 
   const users = useSelector((state: RootState) => state.user.users)

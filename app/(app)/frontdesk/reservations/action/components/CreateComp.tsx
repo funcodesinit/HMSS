@@ -39,8 +39,8 @@ export default function CreateReserve({ id }: Props) {
     }, [id])
 
     useEffect(() => {
-        dispatch(fetchRooms());
-        dispatch(fetchGuests()).then(() => setLoading(false));
+        dispatch(fetchRooms() as any);
+        dispatch(fetchGuests() as any).then(() => setLoading(false));
     }, [dispatch]) 
     
     const rooms = useSelector((state: RootState) => state?.room?.rooms?.data)

@@ -31,8 +31,8 @@ export default function ProductsListComp() {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    dispatch(fetchPublicCategoryList());
-    dispatch(fetchPublicProductList()).then(() => setLoading(false));
+    dispatch(fetchPublicCategoryList() as any);
+    dispatch(fetchPublicProductList() as any).then(() => setLoading(false));
   }, [dispatch])
 
   const prod = useSelector((state: RootState) => state.payment.products)

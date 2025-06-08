@@ -46,7 +46,7 @@ export default function RoomComp() {
       "page": 1, 
       "limit": 20 
     };
-    dispatch(fetchRooms(filters)).then(() => setLoading(false));
+    dispatch(fetchRooms(filters) as any).then(() => setLoading(false));
   }, [search, filterStatus, filterType, isOpen]);
 
 
