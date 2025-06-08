@@ -9,7 +9,7 @@
       <Combobox
         options={options}
         displayValue={displayValue}
-        value={options.find((g) => g.id === field.value) || null}
+        value={options?.find((g) => g.id === field.value) || null}
         onChange={(guest) => helpers.setValue(guest?.id || '')}
         defaultValue={options[0]}
       >

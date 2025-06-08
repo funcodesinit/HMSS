@@ -156,9 +156,7 @@ export async function POST(req: Request) {
     //upload thumb to Cloudinary if provided
     if (thumb) {
       try {
-        // const uploadResponse = await cloudinary.v2.uploader.upload(thumb, {
-        //   folder: "products",
-        // });
+        
         const uploadResponse = await cloudinary.v2.uploader.upload(thumb, {
           folder: "frontdesk/products",
         });
@@ -181,7 +179,7 @@ export async function POST(req: Request) {
 
 
     const processedInput = {
-      // thumb: thumbUrl,
+      thumb: thumbUrl,
       name,
       description,
       price: priceNum,

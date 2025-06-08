@@ -209,17 +209,7 @@ export default function RoomComp() {
           onChange={(e) => setSearch(e.target.value)}
         />
 
-        {/* <Select
-          value={filterType}
-          onChange={(e) => setFilterType(e.target.value)}
-        >
-          <option value="">All Types</option>
-          <option value="STANDARD">Standard</option>
-          <option value="A_FRAMES">A Frames</option>
-          <option value="FLOATING">Floating</option>
-          <option value="EXECUTIVE">Executive</option>
-        </Select> */}
-
+       
         <Select
           value={filterStatus}
           onChange={(e) => setFilterStatus(e.target.value)}

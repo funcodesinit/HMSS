@@ -41,10 +41,8 @@ export default function CreateReserve({ id }: Props) {
     useEffect(() => {
         dispatch(fetchRooms());
         dispatch(fetchGuests()).then(() => setLoading(false));
-    }, [dispatch])
-
-
-
+    }, [dispatch]) 
+    
     const rooms = useSelector((state: RootState) => state?.room?.rooms?.data)
     const guests = useSelector((state: RootState) => state?.user?.guests?.data);
     const reservation = useSelector((state: RootState) => state?.room?.selected_reservation)
@@ -91,8 +89,7 @@ export default function CreateReserve({ id }: Props) {
         } finally {
             setLoading(false)
         }
-    }
-
+    } 
 
     if (loading) return <LoadingComp />
 

@@ -13,50 +13,34 @@ export async function GET(req: NextRequest) {
     const search = searchParams.get("search")?.toLowerCase() || "";
 
     const number = searchParams.get("number");
-    const type = searchParams.get("type");
     const pricePerNight = searchParams.get("pricePerNight");
     const status = searchParams.get("status");
 
     const whereClause: any = {};
-
+    const validStatuses = ["AVAILABLE", "OCCUPIED", "RESERVED", "MAINTENANCE"];
     if (search) {
       const orConditions: any[] = [];
 
-      // Search string match on room number
-      orConditions.push({
-        number: {
-          contains: search,
-          mode: "insensitive",
-        },
-      });
-
-      // If search is a number, try matching price
-      const numericSearch = parseFloat(search);
+      const numericSearch = parseInt(search);
       if (!isNaN(numericSearch)) {
+        orConditions.push({ number: numericSearch });
         orConditions.push({ pricePerNight: numericSearch });
       }
 
-      // Try exact match on enums
       const upperSearch = search.toUpperCase();
-
-      const validStatuses = ["AVAILABLE", "OCCUPIED", "RESERVED", "MAINTENANCE"];
-      const validTypes = ["STANDARD", "A_FRAMES", "FLOATING", "EXECUTIVE"];
 
       if (validStatuses.includes(upperSearch)) {
         orConditions.push({ status: upperSearch });
       }
 
-      if (validTypes.includes(upperSearch)) {
-        orConditions.push({ type: upperSearch });
-      }
+
 
       whereClause.OR = orConditions;
     }
-
-    // Additional filters
     if (number) {
-      whereClause.number = { equals: number };
+      whereClause.number = { equals: parseInt(number) };
     }
+
 
     if (pricePerNight) {
       whereClause.pricePerNight = { equals: parseFloat(pricePerNight) };
@@ -66,9 +50,11 @@ export async function GET(req: NextRequest) {
       whereClause.status = { equals: status as RoomStatus };
     }
 
-    if (type) {
-      whereClause.type = { equals: type as RoomType };
-    }
+    // if (type) {
+    //   whereClause.type = { equals: type as RoomType };
+    // }
+
+
 
     const [rooms, total] = await Promise.all([
       prisma.room.findMany({
@@ -100,7 +86,7 @@ export async function GET(req: NextRequest) {
     );
   }
 }
- 
+
 export async function POST(req: Request) {
   try {
     const body = await req.json();
@@ -140,7 +126,7 @@ export async function POST(req: Request) {
   }
 
 
-} 
+}
 
 export async function PATCH(req: Request) {
   try {
