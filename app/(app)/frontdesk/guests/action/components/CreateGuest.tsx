@@ -98,12 +98,7 @@ export default function CreateGuest({ id }: Props) {
                 city: guest?.city || '',
                 province: guest?.province || '',
                 country: guest?.country || '',
-                purpose_tourist: guest?.purpose_tourist || false,
-                purpose_conference: guest?.purpose_conference || false,
-                purpose_group: guest?.purpose_group || false,
-                purpose_business: guest?.purpose_business || false,
-                paymentMethod: guest?.paymentMethod || 'CASH',
-                signature: guest?.signature || '',
+               
             }}
             validationSchema={Yup.object({
                 firstName: Yup.string().required("First name is required."),
@@ -115,9 +110,7 @@ export default function CreateGuest({ id }: Props) {
                 idNo: Yup.string().required('ID No is required'),
                 city: Yup.string().required('City is required'),
                 province: Yup.string().required('Province is required'),
-                country: Yup.string().required('Country is required'),
-                paymentMethod: Yup.string().required('Payment method is required'),
-                signature: Yup.string().required('Signature is required'),
+                country: Yup.string().required('Country is required'), 
             })}
             onSubmit={handleSubmit}
         >
@@ -173,73 +166,7 @@ export default function CreateGuest({ id }: Props) {
                     </section>
 
                     <Divider className="my-5" soft />
-
-                    {/* Purpose & Payment */}
-                    <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
-                        <Fieldset>
-                            <Legend>Purpose</Legend>
-                            <Text>Purpose of guest visit.</Text>
-                            <CheckboxGroup>
-                                <Field className='gap-2 flex items-center'>
-                                    <input
-                                        id="purpose_tourist"
-                                        name="purpose_tourist"
-                                        type="checkbox"
-                                        onChange={handleChange}
-                                        checked={values.purpose_tourist}
-                                        className="form-checkbox"
-                                    />
-                                    <Label htmlFor="purpose_tourist">Tourism</Label>
-                                </Field>
-                                <Field className='gap-2 flex items-center'>
-                                    <input
-                                        id="purpose_conference"
-                                        name="purpose_conference"
-                                        type="checkbox"
-                                        onChange={handleChange}
-                                        checked={values.purpose_conference}
-                                        className="form-checkbox"
-                                    />
-                                    <Label htmlFor="purpose_conference">Conference</Label>
-                                </Field>
-                                <Field className='gap-2 flex items-center'>
-                                    <input
-                                        id="purpose_group"
-                                        name="purpose_group"
-                                        type="checkbox"
-                                        onChange={handleChange}
-                                        checked={values.purpose_group}
-                                        className="form-checkbox"
-                                    />
-                                    <Label htmlFor="purpose_group">Group</Label>
-                                </Field>
-                                <Field className='gap-2 flex items-center'>
-                                    <input
-                                        id="purpose_business"
-                                        name="purpose_business"
-                                        type="checkbox"
-                                        onChange={handleChange}
-                                        checked={values.purpose_business}
-                                        className="form-checkbox"
-                                    />
-                                    <Label htmlFor="purpose_business">Business</Label>
-                                </Field> 
-                            </CheckboxGroup>
-                        </Fieldset>
-
-                        <div className="space-y-6">
-                            <Field>
-                                <Label>Payment Method</Label>
-                                <Select name="paymentMethod">
-                                    <option value="CASH">Cash</option>
-                                    <option value="COMPANY">Company</option>
-                                    <option value="CARD">Card</option>
-                                </Select>
-                            </Field>
-                            <FormikInput label="Signature" name="signature" type="text" />
-                        </div>
-                    </section>
-
+ 
                     <Divider className="my-5" soft />
 
                     {/* Actions */}

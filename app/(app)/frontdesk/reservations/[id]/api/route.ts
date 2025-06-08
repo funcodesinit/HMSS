@@ -17,11 +17,15 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
     //   return NextResponse.json({ error: 'Invalid Order Id' }, { status: 400 });
     // }
 
-    const guest = await prisma.reservation.findFirst({
-      where: { id: id }
+    const res = await prisma.reservation.findFirst({
+      where: { id: id },
+      include: {
+        guest: true,
+        room: true,
+      },
     });
 
-    return NextResponse.json(guest, { status: 200 }
+    return NextResponse.json(res, { status: 200 }
     );
   } catch (error) {
     console.error("Error fetching reservation:", error);
@@ -32,37 +36,36 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
   }
 }
 
-// export async function PATCH(req: Request, { params }: { params: { id: string } }) {
-//   try {
-//     const { id } = params;
-//     const body = await req.json();
+export async function PATCH(req: Request, { params }: { params: { id: string } }) {
+  try {
+    const { id } = params;
+    const body = await req.json();
 
-//     const updatedGuest = await prisma.reservation.update({
-//       where: { id },
-//       data: {
-//         firstName: body.firstName,
-//         lastName: body.lastName,
-//         email: body.email,
-//         phoneNumber: body.phoneNumber,
-//         company: body.company,
-//         address: body.address,
-//         idNo: body.idNo,
-//         city: body.city,
-//         province: body.province,
-//         country: body.country,
-//         purpose_tourist: body.purpose_tourist,
-//         purpose_conference: body.purpose_conference,
-//         purpose_group: body.purpose_group,
-//         purpose_business: body.purpose_business,
-//         payment: body.paymentMethod,
-//         signature: body.signature
-//       },
-//     });
+    const updatedGuest = await prisma.reservation.update({
+      where: { id },
+      data: {
+        guestId: body.guestId,
+        roomId: body.roomId,
+        checkInDate: new Date(body.checkInDate),
+        checkOutDate: new Date(body.checkOutDate),
+        adults: body.adults,
+        children: body.child,
+        extraBed: body.extraBed ?? null,
+        bookedBy: body.bookedBy ?? null,
+        receiptionist: body.receptionist ?? null,
+        dutyManager: body.dutyManager ?? null,
+        status: body.status ?? 'PENDING',
+        purpose_tourist: body.purpose_tourist ?? null,
+        purpose_business: body.purpose_business ?? null,
+        purpose_group: body.purpose_group ?? null,
+        payment: body.paymentMethod ?? 'CASH',
+      },
+    });
 
-//     return NextResponse.json({ success: true, guest: updatedGuest }, { status: 200 });
-//   } catch (err) {
-//     return NextResponse.json({ error: err.message || "Internal server error" }, { status: 500 });
-//   }
-// }
+    return NextResponse.json({ success: true, guest: updatedGuest }, { status: 200 });
+  } catch (err) {
+    return NextResponse.json({ error: err.message || "Internal server error" }, { status: 500 });
+  }
+}
 
 

@@ -91,13 +91,7 @@ export async function POST(req: Request) {
       idNo,
       city,
       province,
-      country,
-      purpose_tourist,
-      purpose_conference,
-      purpose_group,
-      purpose_business,
-      paymentMethod,
-      signature
+      country, 
     } = body
 
     if (!body || Object.keys(body).length === 0) {
@@ -115,13 +109,7 @@ export async function POST(req: Request) {
       idNo: idNo,
       city: city,
       province: province,
-      country: country,
-      purpose_tourist: purpose_tourist,
-      purpose_conference: purpose_conference,
-      purpose_group: purpose_group,
-      purpose_business: purpose_business,
-      payment: paymentMethod,
-      signature: signature
+      country: country, 
     }
 
     const guest = await prisma.guest.create({
@@ -135,8 +123,7 @@ export async function POST(req: Request) {
 
   } catch (err) {
     console.log("Error creating guest:", err);
-    return NextResponse.json({ error: err.message || "Internal server error" }, { status: 500 });
-
+    return NextResponse.json({ error: err.message || "Internal server error" }, { status: 500 }); 
   }
 
 

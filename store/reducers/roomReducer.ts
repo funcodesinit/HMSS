@@ -17,8 +17,7 @@ const initialState: UserState = {
     bills: [],
     selected_bill: null,
 };
-
-
+ 
 export const roomReducer = (state = initialState, { type, payload }) => {
     switch (type) {
         case ActionTypes.SET_ROOMS:
@@ -31,7 +30,7 @@ export const roomReducer = (state = initialState, { type, payload }) => {
             return { ...state, selected_reservation: payload };
         case ActionTypes.SET_BILLS:
             return { ...state, bills: payload, selected_bill: null };
-        case ActionTypes.SET_SELECTED_BILLS:
+        case ActionTypes.SET_SELECTED_BILL:
             return { ...state, selected_bill: payload };
         default:
             return state;

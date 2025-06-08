@@ -17,6 +17,7 @@ import LoadingComp from '../../Loading'
 import { fetchBills, fetchPos } from '@/store/actions/paymentAction'
 import { fetchReservations } from '@/store/actions/roomActions'
 import GuestSelectCombobox from '@/components/app/GuestCombo'
+import { NoSymbolIcon } from '@heroicons/react/20/solid'
 
 export default function BillingComp() {
     const dispatch = useDispatch();
@@ -33,7 +34,7 @@ export default function BillingComp() {
     }, [dispatch])
 
 
-    const bills = useSelector((state: RootState) => state.payment.bills);
+    const bills = useSelector((state: RootState) => state.payment.bills || []);
     const reservations = useSelector((state: RootState) => state.room.reservations);
 
     if (loading) return <LoadingComp />
@@ -194,6 +195,11 @@ export default function BillingComp() {
                     </TableRow>
                 </TableHead>
                 <TableBody>
+                    {bills?.length < 1 && (
+                        <TableRow className="h-24 text-start" colSpan={5}>
+                            <TableCell className='text-lg text-pink-500 flex items-center flex-row gap-2'><span>No bills found</span> <NoSymbolIcon className='size-4' /></TableCell>
+                        </TableRow>)
+                    }
                     {bills?.error && (
                         <TableRow>
                             <TableCell colSpan={5} className="text-pink-500 flex items-center gap-2">
@@ -214,8 +220,8 @@ export default function BillingComp() {
                             </TableCell>
                         </TableRow>
                     )}
-                    {bills?.map((order) => (
-                        <TableRow key={order?.id} title={`Order #${order.id}`}>
+                    {bills?.map((order, idx) => (
+                        <TableRow key={idx} title={`Order #${order.id}`}>
                             <TableCell>{order?.id}</TableCell>
                             <TableCell className="text-zinc-500">{order?.reservation?.room?.number}</TableCell>
                             <TableCell>{order?.reservation?.guest?.firstName} {order?.reservation?.guest?.lastName}</TableCell>

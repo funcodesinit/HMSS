@@ -295,7 +295,7 @@ export default function ProductsListComp() {
               <div key={product.id} className="flex gap-6 py-6">
                 <div className="w-32 shrink-0">
 
-                  <img className="aspect-3/2 rounded-lg shadow-sm" src={product?.thumb} alt="" />
+                  <img className="aspect-3/2 rounded-lg shadow-sm" src={product?.thumb||'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSLkN4VsHXmLN4YHMbn5TJyPO0_SgQWvx8aQmJyJpvaTHaONr52X-T0WmR8QR_JXZmmrww&usqp=CAU'} alt="" />
 
                 </div>
                 <div className="space-y-1.5">

@@ -58,11 +58,11 @@ export default function SalesComp() {
             setCurrentUser(guests[0]);
         }
     }, [guests]);
-    const products = useSelector((state: RootState) => state.payment.products);
+    const products = useSelector((state: RootState) => state.payment.products || []);
     const [currentUser, setCurrentUser] = useState(guests?.length > 0 ? guests[0] : null);
     const order = useSelector((state: RootState) => state.payment.selected_order);
 
-    const filteredProducts = activeTab === 'All' ? products : products.filter(p => p.section === activeTab);
+    const filteredProducts = activeTab === 'All' ? products : products?.filter(p => p.section === activeTab);
 
 
 
@@ -94,18 +94,18 @@ export default function SalesComp() {
                 <div className="hidden sm:block">
                     <div className="border-b border-gray-200">
                         <nav aria-label="Tabs" className="-mb-px flex space-x-8">
-                            {tabs.map((tab) => (
+                            {tabs?.map((tab) => (
                                 <button
-                                    key={tab.name}
+                                    key={tab?.name}
                                     onClick={() => setActiveTab(tab.name)}  // ✅ Use onClick here
                                     className={classNames(
-                                        tab.name === activeTab
+                                        tab?.name === activeTab
                                             ? 'border-indigo-500 text-indigo-600'
                                             : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700',
                                         'group inline-flex items-center border-b-2 px-1 py-4 text-sm font-medium'
                                     )}
                                 >
-                                    {tab.name}
+                                    {tab?.name}
                                 </button>
                             ))}
                         </nav>
@@ -185,8 +185,8 @@ export default function SalesComp() {
                     handleSubmit, isSubmitting, errors, handleChange, setFieldValue, status, setStatus, values
                 }) => {
                     const subtotal = values.orderItems.reduce((acc, item) => {
-                        const product = products.find(p => p.id === item.productId);
-                        return acc + (product ? product.price * item.quantity : 0);
+                        const product = products?.find(p => p.id === item.productId);
+                        return acc + (product ? product?.price * item.quantity : 0);
                     }, 0);
 
                     const taxRate = 0.14; // example: 10%
@@ -200,9 +200,9 @@ export default function SalesComp() {
                                     Items in your shopping cart
                                 </h2>
                                 <div className="mt-6 grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 md:grid-cols-3 md:gap-y-0 lg:gap-x-8">
-                                    {filteredProducts.map((product, productIdx) => (
+                                    {filteredProducts?.map((product, productIdx) => (
                                         <div key={product.id} className="group relative cursor-pointer" onClick={() => {
-                                            const itemIndex = values.orderItems.findIndex(i => i.productId === product.id);
+                                            const itemIndex = values?.orderItems?.findIndex(i => i.productId === product.id);
                                             let updatedItems = [...values.orderItems];
                                             if (itemIndex >= 0) {
                                                 updatedItems[itemIndex] = {
@@ -215,7 +215,7 @@ export default function SalesComp() {
                                             }
                                             setFieldValue('orderItems', updatedItems);
                                         }}>
-                                            <img alt={product.thumb} src={product.thumb} className="w-fit h-fit object-cover rounded-md" />
+                                            <img alt={product.thumb} src={product.thumb||'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSLkN4VsHXmLN4YHMbn5TJyPO0_SgQWvx8aQmJyJpvaTHaONr52X-T0WmR8QR_JXZmmrww&usqp=CAU'} className="w-fit h-fit object-cover rounded-md" />
                                             <h3 className="mt-4 text-sm text-gray-700">
                                                 <a href={product.href}>
                                                     <span className="absolute inset-0" />
@@ -248,17 +248,18 @@ export default function SalesComp() {
                                 <dl className="mt-6 space-y-4">
                                     <Field>
                                         <Label>Order By</Label>
-                                        <GuestSelectCombobox
+                                        {guests && (<GuestSelectCombobox
                                             name="guestId"
                                             options={guests}
                                             displayValue={(g) => g?.firstName}
-                                        />
+                                        />) }
+                                        
                                     </Field>
-                                    {values.orderItems.map((item, idx) => {
-                                        const product = products.find(p => p.id === item.productId);
+                                    {values?.orderItems?.map((item, idx) => {
+                                        const product = products?.find(p => p?.id === item?.productId);
                                         return (
-                                            <div key={item.productId} className="col border-b border-gray-200 py-6 flex items-center gap-x-4 lg:gap-x-6">
-                                                <img alt={product.thumb} src={product.thumb} className="w-10 object-cover" />
+                                            <div key={item?.productId} className="col border-b border-gray-200 py-6 flex items-center gap-x-4 lg:gap-x-6">
+                                                <img alt={product?.thumb} src={product.thumb} className="w-10 object-cover" />
 
                                                 <div className='w-full flex flex-col gap-2'>
 

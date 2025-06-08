@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma'; // Adjust the import path as necessary
 
+
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
@@ -9,17 +10,42 @@ export async function GET(req: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '10');
     const skip = (page - 1) * limit;
 
-    const guestId = searchParams.get('guest');
-    const roomId = searchParams.get('room');
+    const guest = searchParams.get('guest');
+    const room = searchParams.get('room');
     const status = searchParams.get('status');
     const startDate = searchParams.get('startDate');
     const endDate = searchParams.get('endDate');
 
-    const where: any = {};
 
-    if (guestId) where.guestId = guestId;
-    if (roomId) where.roomId = roomId;
-    if (status) where.status = status;
+    const where: any = { AND: [] };
+
+    if (guest) {
+      where.AND.push({
+        guest: {
+          OR: [
+            { firstName: { contains: guest, mode: 'insensitive' } },
+            { lastName: { contains: guest, mode: 'insensitive' } },
+            { email: { contains: guest, mode: 'insensitive' } },
+          ],
+        },
+      });
+    }
+
+
+
+
+    if (room) {
+      const roomNumber = parseInt(room);
+      if (!isNaN(roomNumber)) {
+        where.room = {
+          number: roomNumber,
+        };
+      }
+    }
+
+    if (status) {
+      where.status = status;
+    }
 
     if (startDate && endDate) {
       where.checkInDate = { gte: new Date(startDate) };
@@ -55,7 +81,6 @@ export async function GET(req: NextRequest) {
 }
 
 
-// === POST: Create Reservation ===
 export async function POST(req: NextRequest) {
   try {
     const data = await req.json();
@@ -67,12 +92,16 @@ export async function POST(req: NextRequest) {
         checkInDate: new Date(data.checkInDate),
         checkOutDate: new Date(data.checkOutDate),
         adults: data.adults,
-        children: data.children,
+        children: data.child,
         extraBed: data.extraBed ?? null,
         bookedBy: data.bookedBy ?? null,
-        receiptionist: data.receiptionist ?? null,
+        receiptionist: data.receptionist ?? null,
         dutyManager: data.dutyManager ?? null,
         status: data.status ?? 'PENDING',
+        purpose_tourist: data.purpose_tourist ?? null,
+        purpose_business: data.purpose_business ?? null,
+        purpose_group: data.purpose_group ?? null,
+        payment: data.paymentMethod ?? 'CASH',
       },
     });
 
@@ -83,4 +112,3 @@ export async function POST(req: NextRequest) {
   }
 }
 
- 

@@ -71,13 +71,7 @@ model Guest {
   country            String?
   province           String?
   address            String?
-  signature          String?
-  purpose_tourist    Boolean?      @default(false)
-  purpose_conference Boolean?      @default(false)
-  purpose_group      Boolean?      @default(false)
-  purpose_business   Boolean?      @default(false)
-  payment            PaymentMethod @default(CASH)
-
+   
   createdAt DateTime @default(now())
 
   reservations Reservation[]
@@ -91,17 +85,24 @@ enum PaymentMethod {
 }
 
 model Reservation {
-  id            String            @id @default(uuid())
-  guestId       String
-  roomId        String
-  checkInDate   DateTime
-  checkOutDate  DateTime
-  adults        String?
-  children      String?
-  extraBed      Boolean?
-  bookedBy      String?
-  receiptionist String?
-  dutyManager   String?
+  id                 String            @id @default(uuid())
+  guestId            String
+  roomId             String
+  checkInDate        DateTime
+  checkOutDate       DateTime
+  adults             String?
+  children           String?
+  extraBed           Boolean?
+  bookedBy           String?
+  receiptionist      String?
+  dutyManager        String?
+  signature          String?
+  purpose_tourist    Boolean?      @default(false)
+  purpose_conference Boolean?      @default(false)
+  purpose_group      Boolean?      @default(false)
+  purpose_business   Boolean?      @default(false)
+  payment            PaymentMethod @default(CASH)
+
   status        ReservationStatus @default(PENDING)
   createdAt     DateTime          @default(now())
   Billing       Billing[]
@@ -128,7 +129,7 @@ model Billing {
   paid          Boolean   @default(false)
   createdAt     DateTime  @default(now())
 
-  reservation Reservation @relation(fields: [reservationId], references: [id])
+  reservation   Reservation @relation(fields: [reservationId], references: [id])
 }
 
 model Category {
