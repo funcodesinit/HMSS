@@ -2,13 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
 
-type Params = {
-  params: {
-    id: string;
-  };
-};
-
-export async function GET(req: Request, { params }: Params ) {
+ 
+export async function GET(req: Request, context: { params: { id: string } } ) {
   try {
 
     const session = await auth();
@@ -16,7 +11,7 @@ export async function GET(req: Request, { params }: Params ) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { id } = await params;
+    const  id  = context.params.id;
     // if (isNaN(id) || id <= 0) {
     //   return NextResponse.json({ error: 'Invalid Order Id' }, { status: 400 });
     // }
