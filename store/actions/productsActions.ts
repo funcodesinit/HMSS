@@ -1,16 +1,18 @@
 import products from "@/app/api/apisauce/products";
 import { ActionTypes } from "../constants/action-types"
 import category from "@/app/api/apisauce/category";
+import { Anybody } from "next/font/google";
+import { AppDispatch } from "..";
 
 // redux thunk api calls 
-export const fetchPublicProductList = (options = {}) => async (dispatch) => {
+export const fetchPublicProductList = (options = {}) => async (dispatch:AppDispatch) => {
     try {
         const productsList = await products.list(options);
         dispatch({
             type: ActionTypes.SET_PRODUCTS,
-            payload: productsList?.data?.data
+            payload: productsList?.data
         });
-    } catch (error) {
+    } catch (error:any) {
         console.error("Error fetching product list:", error);
         dispatch({
             type: ActionTypes.SET_FETCH_ERROR,
@@ -19,14 +21,14 @@ export const fetchPublicProductList = (options = {}) => async (dispatch) => {
     }
 };
 
-export const fetchPublicCategoryList = () => async (dispatch) => {
+export const fetchPublicCategoryList = () => async (dispatch:AppDispatch) => {
     try {
         const prod = await category?.list();
         dispatch({
             type: ActionTypes.SET_CATEGORY,
             payload: prod?.data
         });
-    } catch (error) {
+    } catch (error:any) {
         console.error("Error fetching product list:", error);
         dispatch({
             type: ActionTypes.SET_FETCH_ERROR,

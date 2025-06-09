@@ -8,7 +8,7 @@ import { Input } from '@/components/input'
 import { Strong, Text, TextLink } from '@/components/text'
 import * as Yup from 'yup';
 import { Formik } from 'formik'
-import { signIn } from "next-auth/react";
+import { signIn, SignInResponse } from "next-auth/react";
 import React from 'react'
 import FormikInput from '@/components/app/FormikField'
 import { useRouter } from "next/navigation";
@@ -22,24 +22,33 @@ export default function SignInComp() {
 
   const [error, setError] = React.useState<string | null>(null)
   const [loading, setLoading] = React.useState(false)
-  // const router = useRouter();
+  const router = useRouter();
 
 
   const handleSubmit = async (values: any) => {
     setLoading(true);
-    const signInData =  {
+    // const signInData =  {
+    //   email: values.email,
+    //   password: values.password,
+    //   redirect: false, 
+    //   callbackUrl: '/frontdesk',
+    // }
+    const signInData = {
       email: values.email,
       password: values.password,
-      redirect: true,
-      callbackUrl: '/frontdesk',
-    }
-    const signin = await signIn('credentials', signInData);
-    if (signin?.error) {
+      // redirect: false, // Prevent automatic redirection
+      callbackUrl: '/frontdesk', // Specify the callback URL
+     };
+
+
+    const signin = await signIn('credentials', signInData) as any;//as  SignInResponse;
+
+    if (signin.error) {
       console.log("Signin Error:", signin); // Log the error object for debugging
       setError("Invalid Credentials, please check your phone number and password.");
       setLoading(false); // Reset loading state when error occurs
     } else {
-      // router.push('/frontdesk');
+      router.push('/frontdesk');
     }
     setLoading(false);
 
@@ -65,7 +74,7 @@ export default function SignInComp() {
         }) => (
           <form method="post" onSubmit={handleSubmit} className="grid w-full max-w-sm grid-cols-1 gap-8">
             {/* <Logo className="h-6 text-zinc-950 dark:text-white forced-colors:text-[CanvasText]" /> */}
-            
+
             <Heading>Frontdesk signin</Heading>
 
             {error && (
@@ -98,7 +107,7 @@ export default function SignInComp() {
 
             <Text>
               Only staff and admin authentication{' '}
-           
+
             </Text>
           </form>
         )}

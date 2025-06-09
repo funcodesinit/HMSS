@@ -32,7 +32,7 @@ import {
   UserIcon,
 } from '@heroicons/react/16/solid'
 import {
-    ClipboardDocumentIcon,
+  ClipboardDocumentIcon,
   Cog6ToothIcon,
   CreditCardIcon,
   HomeIcon,
@@ -45,16 +45,23 @@ import {
   SparklesIcon,
   Square2StackIcon,
   TicketIcon,
-} from '@heroicons/react/20/solid'
-import { useSession } from 'next-auth/react'
+} from '@heroicons/react/20/solid' 
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 
 
-export default function ApplicationLayout({ children }: { children: React.ReactNode }) {
-    let pathname = usePathname()
-    const {data:session} = useSession()
-    const user = session?.user || {}
+export default function ApplicationLayout({ children, session }: { children: React.ReactNode,session:any }) {
+  let pathname = usePathname()
+  
+  const user = session?.user as {
+    id: any;
+    email?: string;
+    phoneNumber?: string;
+    firstName?: string;
+    lastName?: string;
+    role?: string;
+    avatar?: string;
+  };
 
 
   return (
@@ -104,7 +111,7 @@ export default function ApplicationLayout({ children }: { children: React.ReactN
       sidebar={
         <Sidebar>
           <SidebarHeader>
-            <Image src="/logo.png"  alt='logo' width={100} height="100" className='mb-3 tint-red-900' />
+            <Image src="/logo.png" alt='logo' width={100} height="100" className='mb-3 tint-red-900' />
             <SidebarSection className="max-lg:hidden">
               {/* <SidebarItem href="/search">
                 <MagnifyingGlassIcon />
@@ -118,32 +125,32 @@ export default function ApplicationLayout({ children }: { children: React.ReactN
           </SidebarHeader>
           <SidebarBody>
             <SidebarSection>
-              
+
               <SidebarItem href="/frontdesk/guests" current={pathname === '/frontdesk/guests'}>
                 <UserIcon />
                 <SidebarLabel>Guests</SidebarLabel>
               </SidebarItem>
-              
+
               <SidebarItem href="/frontdesk/rooms" current={pathname === '/frontdesk/rooms'}>
                 <TicketIcon />
                 <SidebarLabel>Rooms</SidebarLabel>
               </SidebarItem>
 
               <SidebarItem href="/frontdesk/reservations" current={pathname === '/frontdesk/reservations'}>
-                <ClipboardDocumentIcon   />
+                <ClipboardDocumentIcon />
                 <SidebarLabel>Reservations</SidebarLabel>
               </SidebarItem>
 
               <SidebarItem href="/frontdesk/products" current={pathname === '/frontdesk/products'}>
-                <ShoppingCartIcon  />
-                <SidebarLabel>Products</SidebarLabel>
+                <ShoppingCartIcon />
+                <SidebarLabel>Menu Items</SidebarLabel>
               </SidebarItem>
-              
-              <SidebarItem href="/frontdesk/sales" current={pathname ==='/frontdesk/sales'}>
+
+              <SidebarItem href="/frontdesk/sales" current={pathname === '/frontdesk/sales'}>
                 <InboxStackIcon />
                 <SidebarLabel>POS Transactions</SidebarLabel>
               </SidebarItem>
-               <SidebarItem href="/frontdesk/orders" current={pathname ==='/frontdesk/orders'}>
+              <SidebarItem href="/frontdesk/orders" current={pathname === '/frontdesk/orders'}>
                 <InboxStackIcon />
                 <SidebarLabel>Orders</SidebarLabel>
               </SidebarItem>
@@ -152,7 +159,7 @@ export default function ApplicationLayout({ children }: { children: React.ReactN
                 <CreditCardIcon />
                 <SidebarLabel>Billing</SidebarLabel>
               </SidebarItem>
-             
+
             </SidebarSection>
             {/* <SidebarSection className="max-lg:hidden">
               <SidebarHeading>Quick Reports</SidebarHeading>
@@ -178,18 +185,17 @@ export default function ApplicationLayout({ children }: { children: React.ReactN
             <Dropdown>
               <DropdownButton as={SidebarItem}>
                 <span className="flex min-w-0 items-center gap-3">
-                  {/* <Avatar src="/profile-photo.jpg" className="size-10" square alt="" /> */}
                   <span className="min-w-0">
-                    <span className="block truncate text-sm/5 font-medium text-zinc-950 dark:text-white">{user?.firstName||''} {user?.lastName||''}</span>
+                    //add firstName and lastName to user object
                     <span className="block truncate text-xs/5 font-normal text-zinc-500 dark:text-zinc-400">
-                      {user?.email ||'looading...'}
+                      {user?.email || 'looading...'}
                     </span>
                   </span>
                 </span>
                 <ChevronUpIcon />
               </DropdownButton>
               <DropdownMenu className="min-w-64" anchor="top start">
-                <DropdownItem href="/my-profile">
+                {/* <DropdownItem href="/my-profile">
                   <UserIcon />
                   <DropdownLabel>My profile</DropdownLabel>
                 </DropdownItem>
@@ -198,8 +204,8 @@ export default function ApplicationLayout({ children }: { children: React.ReactN
                 <DropdownItem href="/privacy-policy">
                   <ShieldCheckIcon />
                   <DropdownLabel>Privacy policy</DropdownLabel>
-                </DropdownItem>
-              
+                </DropdownItem> */}
+
                 <DropdownDivider />
                 <DropdownItem href="/api/auth/signout">
                   <ArrowRightStartOnRectangleIcon />

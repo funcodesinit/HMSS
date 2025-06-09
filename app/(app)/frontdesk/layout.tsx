@@ -5,13 +5,15 @@ import React from 'react'
 import ApplicationLayout from './ApplicationLayout';
 import StoreProvider from '@/context/StoreProvider';
 import AuthProvider from '@/context/AuthProvider';
+import { auth } from '@/auth';
 
 
 const layout = async ({ children }: { children: React.ReactNode }) => {
+    const session = await auth();
 
     return <StoreProvider>
-        <AuthProvider>
-            <ApplicationLayout >
+        <AuthProvider session={session} >
+            <ApplicationLayout session={session}>
                 {children}
             </ApplicationLayout>;
         </AuthProvider>

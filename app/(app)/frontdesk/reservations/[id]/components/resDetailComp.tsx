@@ -25,18 +25,18 @@ const ResDetailComp = ({ id }: Props) => {
     const contentRef = useRef<HTMLDivElement>(null);
     const reactToPrintFn = useReactToPrint({ contentRef });
     useEffect(() => {
-        dispatch(fetchReservation(id));
+        dispatch(fetchReservation(id) as any);
     }, [id])
 
     useEffect(() => {
-        dispatch(fetchRooms());
-        dispatch(fetchGuests()).then(() => setLoading(false));
+        dispatch(fetchRooms() as any);
+        dispatch(fetchGuests() as any).then(() => setLoading(false));
     }, [dispatch])
 
     const reservation = useSelector((state: RootState) => state?.room?.selected_reservation)
     const guests = useSelector((state: RootState) => state?.user?.guests?.data);
 
-    const guest = guests?.find((g) => g.id === reservation?.guestId);
+    const guest = guests?.find((g:any) => g.id === reservation?.guestId);
 
 
     return (

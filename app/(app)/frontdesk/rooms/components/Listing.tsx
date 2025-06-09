@@ -2,8 +2,22 @@ import { Subheading } from '@/components/heading'
 import { PencilSquareIcon } from '@heroicons/react/20/solid';
 import React from 'react'
 import StatusBadge from './StatusBadge';
+import { RoomType } from '../../types/rooms';
 
-export default function ListingComp({ title, rooms, setRoom, setIsOpen }: { title: string, rooms: any[] }) {
+ 
+
+interface ListingCompProps {
+  title: string;
+  rooms: {
+    data?: RoomType[];
+    error?: string;
+  };
+  setRoom: (room: RoomType) => void;
+  setIsOpen: (open: boolean) => void;
+}
+
+
+export default function ListingComp({ title, rooms, setRoom, setIsOpen }: ListingCompProps) {
     // This component is used to display a listing of rooms with a title
     return (
         <div>

@@ -14,16 +14,25 @@ const initialState: UserState = {
     selected_guest: null,
 };
 
-export const accountReducer = (state = initialState, { type, payload }) => {
-    switch (type) { 
+
+interface ActionT {
+    type: string;
+    payload?: any;
+}
+
+export const accountReducer = (state = initialState, 
+    action: ActionT
+
+) => {
+    switch (action.type) { 
         case ActionTypes.SET_GUESTS:
-            return { ...state, guests: payload };
+            return { ...state, guests: action.payload };
         case ActionTypes.SET_USERS:
-            return { ...state, users: payload };
+            return { ...state, users: action.payload };
         case ActionTypes.SET_SELECTED_USER:
-            return { ...state, selected_user: payload };
+            return { ...state, selected_user: action.payload };
         case ActionTypes.SET_SELECTED_GUESTS:
-            return { ...state, selected_guest: payload };
+            return { ...state, selected_guest: action.payload };
         default:
             return state;
     }

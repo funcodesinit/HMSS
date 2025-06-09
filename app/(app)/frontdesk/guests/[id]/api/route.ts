@@ -3,8 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
 
 
-
-export async function GET(req: Request, { params }: { params: { id: string } }) {
+export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
 
     const session = await auth();
@@ -24,7 +23,6 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
     return NextResponse.json(guest, { status: 200 }
     );
   } catch (error) {
-    console.error("Error fetching guests:", error);
     return NextResponse.json(
       { error: "Failed to fetch guests" },
       { status: 500 }
@@ -32,9 +30,10 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
   }
 }
 
-export async function PATCH(req: Request, { params }: { params: { id: string } }) {
+export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const { id } = params;
+    const { id } = await params;
+
     const body = await req.json();
 
     const updatedGuest = await prisma.guest.update({
@@ -50,18 +49,18 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
         city: body.city,
         province: body.province,
         country: body.country,
-        purpose_tourist: body.purpose_tourist,
-        purpose_conference: body.purpose_conference,
-        purpose_group: body.purpose_group,
-        purpose_business: body.purpose_business,
-        payment: body.paymentMethod,
-        signature: body.signature
+        // purpose_tourist: body.purpose_tourist,
+        // purpose_conference: body.purpose_conference,
+        // purpose_group: body.purpose_group,
+        // purpose_business: body.purpose_business,
+        // payment: body.paymentMethod,
+        // signature: body.signature
       },
     });
 
     return NextResponse.json({ success: true, guest: updatedGuest }, { status: 200 });
-  } catch (err) {
-    return NextResponse.json({ error: err.message || "Internal server error" }, { status: 500 });
+  } catch (error:any) {
+    return NextResponse.json({ error: error?.message || "Internal server error" }, { status: 500 });
   }
 }
 

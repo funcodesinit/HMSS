@@ -37,7 +37,7 @@ export default function DetailsProdFormComp({ id }: { id: any }) {
 
 
   const category = useSelector((state: RootState) => state.payment.category)
-  const product = useSelector((state: RootState) => state.payment.selected_product)
+  const product = useSelector((state: RootState) => state.payment.selected_product) as any;
 
 
   const initialValues = {

@@ -11,16 +11,17 @@ import * as Yup from 'yup'
 
 import FormikInput from '@/components/app/FormikField'
 import { Divider } from '@/components/divider'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { RootState } from '@/store'
 import LoadingComp from '../../Loading'
-import { fetchBills, fetchPos } from '@/store/actions/paymentAction'
+import { fetchBills } from '@/store/actions/paymentAction'
 import { fetchReservations } from '@/store/actions/roomActions'
 import GuestSelectCombobox from '@/components/app/GuestCombo'
 import { NoSymbolIcon } from '@heroicons/react/20/solid'
+import { useAppDispatch } from '@/store/hooks'
 
 export default function BillingComp() {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const [isOpen, setIsOpen] = useState(false);
     const [loading, setLoading] = useState(true);
     const [bill, setBill] = useState(null);
@@ -34,7 +35,7 @@ export default function BillingComp() {
     }, [dispatch])
 
 
-    const bills = useSelector((state: RootState) => state.payment.bills || []);
+    const bills = useSelector((state: RootState) => state.payment.bills || []) as any;
     const reservations = useSelector((state: RootState) => state.room.reservations);
 
     if (loading) return <LoadingComp />
@@ -49,10 +50,9 @@ export default function BillingComp() {
                 <Dialog open={isOpen} onClose={setIsOpen}>
                     <Formik
                         initialValues={{
-                            id: bill?.id || '',
-                            reservationId: bill?.reservationId || '',
-                            amount: bill?.amount || '',
-                            paid: bill?.paid || false,
+                            reservationId: '',
+                            amount: '',
+                            paid: false,
                         }}
                         validationSchema={
                             Yup.object({
@@ -61,13 +61,12 @@ export default function BillingComp() {
                                 paid: Yup.boolean(),
                             })
                         }
-
                         enableReinitialize={true}
                         onSubmit={async (values, { setStatus, resetForm }) => {
                             setLoading(true);
                             setStatus(null);
-                            const url = bill?.id ? `/frontdesk/billing/${bill?.id}/api` : '/frontdesk/billing/api';
-                            const method = bill?.id ? 'PUT' : 'POST';
+                            const url = '/frontdesk/billing/api';
+                            const method = 'POST';
                             try {
                                 const response = await fetch(url, {
                                     method: method,
@@ -101,18 +100,15 @@ export default function BillingComp() {
                                 setBill(null);
                             }
                         }}
-
                     >
                         {({
                             handleSubmit, isSubmitting, errors, handleChange, status, setStatus, values
                         }) => (
                             <form method="post" onSubmit={handleSubmit}>
-                                <DialogTitle> {bill?.id ? `Update Room No. ${bill.id}` : 'Add Pos Transaction'}</DialogTitle>
+                                <DialogTitle>   Add Pos Transaction</DialogTitle>
                                 <DialogDescription>
-                                    Fill in the form to  {bill?.id ? `update Bill No. ${bill.id}` : 'create Bill'}
+                                    Fill in the form to create Bill
                                 </DialogDescription>
-
-
                                 <DialogBody>
 
                                     {status && (
@@ -141,7 +137,7 @@ export default function BillingComp() {
                                         /> */}
                                         <Select name="reservationId" onChange={handleChange} value={values.reservationId}>
                                             <option value="">Select Reservation</option>
-                                            {reservations?.data?.map((g) => (
+                                            {reservations?.data?.map((g:any) => (
                                                 <option key={g.id} value={g.id}>
                                                     Room {g.room.number} - {g.guest.firstName} {g.guest.lastName}
                                                 </option>
@@ -163,10 +159,6 @@ export default function BillingComp() {
                                             className="form-checkbox"
                                         />
                                     </Field>
-
-
-
-
                                 </DialogBody>
                                 <DialogActions>
                                     <Button plain onClick={() => {
@@ -196,22 +188,20 @@ export default function BillingComp() {
                 </TableHead>
                 <TableBody>
                     {bills?.length < 1 && (
-                        <TableRow className="h-24 text-start" colSpan={5}>
+                        <TableRow className="h-24 text-start" >
                             <TableCell className='text-lg text-pink-500 flex items-center flex-row gap-2'><span>No bills found</span> <NoSymbolIcon className='size-4' /></TableCell>
                         </TableRow>)
                     }
-                    {bills?.error && (
+                    {bills.error ? (
                         <TableRow>
                             <TableCell colSpan={5} className="text-pink-500 flex items-center gap-2">
                                 <div className=' text-sm text-red-700'>
-
                                     {bills?.error}
                                 </div>
                             </TableCell>
                         </TableRow>
-                    )}
+                    ): null }
                     {Array.isArray(bills) && bills.length === 0 && (
-
                         <TableRow  >
                             <TableCell colSpan={5} className="text-pink-500 flex items-center gap-2">
                                 <div className='text-sm text-red-700'>
@@ -220,8 +210,8 @@ export default function BillingComp() {
                             </TableCell>
                         </TableRow>
                     )}
-                    {bills?.map((order, idx) => (
-                        <TableRow key={idx} title={`Order #${order.id}`}>
+                    {bills?.map((order:any) => (
+                        <TableRow key={order?.id} title={`Order #${order.id}`}>
                             <TableCell>{order?.id}</TableCell>
                             <TableCell className="text-zinc-500">{order?.reservation?.room?.number}</TableCell>
                             <TableCell>{order?.reservation?.guest?.firstName} {order?.reservation?.guest?.lastName}</TableCell>

@@ -17,26 +17,21 @@ import { RootState } from '@/store'
 import LoadingComp from '../../Loading'
 import { Input } from '@/components/input'
 import ListingComp from './Listing'
+import { RoomType } from '../../types/rooms'
 
  
- 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ')
-}
 
 export default function RoomComp() {
 
   const [isOpen, setIsOpen] = React.useState(false);
   const [loading, setLoading] = useState(true);
-  const [room, setRoom] = useState(null);
-  const dispatch = useDispatch();
+  const [room, setRoom] = useState<RoomType | null>(null);
 
+  const dispatch = useDispatch();
 
   const [search, setSearch] = useState('');
   const [filterStatus, setFilterStatus] = useState('');
   const [filterType, setFilterType] = useState('');
-
-
  
   useEffect(() => {
     const filters = { 
@@ -46,13 +41,12 @@ export default function RoomComp() {
       "page": 1, 
       "limit": 20 
     };
-    dispatch(fetchRooms(filters)).then(() => setLoading(false));
+    dispatch(fetchRooms(filters) as any).then(() => setLoading(false));
   }, [search, filterStatus, filterType, isOpen]);
 
 
-  const rooms = useSelector((state: RootState) => state.room.rooms);
+  const rooms = useSelector((state: RootState) => state?.room?.rooms);
 
-  if (!rooms) return <LoadingComp />
   if (loading) return <LoadingComp />;
 
   return (
@@ -130,9 +124,9 @@ export default function RoomComp() {
               handleSubmit, isSubmitting, errors, handleChange, status, setStatus, values
             }) => (
               <form method="post" onSubmit={handleSubmit}>
-                <DialogTitle> {room?.id ? `Update Room No. ${room.number}` : 'Create new room'}</DialogTitle>
+                <DialogTitle> {room?.id ? `Update Room No. ${room?.number}` : 'Create new room'}</DialogTitle>
                 <DialogDescription>
-                  Fill in the form to  {room?.id ? `update Room No. ${room.number}` : 'create new room'}
+                  Fill in the form to  {room?.id ? `update Room No. ${room?.number}` : 'create new room'}
                 </DialogDescription>
                 <DialogBody>
 

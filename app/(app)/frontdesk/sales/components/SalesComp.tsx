@@ -1,28 +1,47 @@
 'use client'
 import { Heading, Subheading } from '@/components/heading'
-// import { getRecentOrders } from '@/data'
 import { useEffect, useState } from 'react'
 import { Formik } from 'formik'
 import { Field, Label } from '@/components/fieldset'
 import * as Yup from 'yup'
 
-import FormikInput from '@/components/app/FormikField'
-import { Divider } from '@/components/divider'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '@/store'
 import { fetchGuests } from '@/store/actions/userActions'
 import LoadingComp from '../../Loading'
 import { useSession } from 'next-auth/react'
-import { fetchOrders, SetPosStats } from '@/store/actions/paymentAction'
 import { fetchPublicProductList } from '@/store/actions/productsActions'
-import { CheckIcon, ChevronDownIcon, ClockIcon, QuestionMarkCircleIcon, TrashIcon } from '@heroicons/react/20/solid'
-import { Combobox, ComboboxDescription, ComboboxLabel, ComboboxOption } from '@/components/combobox'
+import { ChevronDownIcon, } from '@heroicons/react/20/solid'
 import { useRouter } from 'next/navigation'
 import GuestSelectCombobox from '@/components/app/GuestCombo'
 
 
-function classNames(...classes) {
+function classNames(...classes: (string | boolean | undefined | null)[]) {
     return classes.filter(Boolean).join(' ')
+}
+
+
+interface ProductType {
+    id: string;
+    name: string;
+    price: number;  // Use number not string for price to avoid conversions
+    color?: string;
+    thumb?: string;
+    href?: string;
+    section?: string;
+}
+
+
+interface OrderItem {
+    productId: string;
+    quantity: number;
+}
+
+interface FormValues {
+    orderItems: OrderItem[];
+    guestId: string;
+    tax: number,
+    status: 'PENDING' | 'COMPLETED' | 'CANCELLED'
 }
 
 
@@ -47,8 +66,8 @@ export default function SalesComp() {
     ];
 
     useEffect(() => {
-        dispatch(fetchGuests());
-        dispatch(fetchPublicProductList()).then(() => setLoading(false));
+        dispatch(fetchGuests() as any);
+        dispatch(fetchPublicProductList() as any).then(() => setLoading(false));
     }, [dispatch]);
 
     const guests = useSelector((state: RootState) => state?.user?.guests?.data);
@@ -58,11 +77,11 @@ export default function SalesComp() {
             setCurrentUser(guests[0]);
         }
     }, [guests]);
-    const products = useSelector((state: RootState) => state.payment.products || []);
-    const [currentUser, setCurrentUser] = useState(guests?.length > 0 ? guests[0] : null);
-    const order = useSelector((state: RootState) => state.payment.selected_order);
+    const products = useSelector((state: RootState) => state.payment.products || []) as any;
+    const [currentUser, setCurrentUser] = useState(guests?.length > 0 ? guests[0] : null) as any;
+    const order = useSelector((state: RootState) => state.payment.selected_order) as any;
 
-    const filteredProducts = activeTab === 'All' ? products : products?.filter(p => p.section === activeTab);
+    const filteredProducts = activeTab === 'All' ? products : products?.filter((p: any) => p.section === activeTab) as any;
 
 
 
@@ -120,7 +139,7 @@ export default function SalesComp() {
                     id: order?.id || '',
                     // userId: order?.userId || '',
                     guestId: order?.guestId || '',
-                    tax: order?.tax || '14',
+                    tax: order?.tax || 14,
                     status: order?.status || 'PENDING',
                     orderItems: [],
                 }}
@@ -129,8 +148,10 @@ export default function SalesComp() {
                         id: Yup.string().nullable(),
                         // userId: Yup.string().required('User ID is required'),
                         guestId: Yup.string().required('Guest ID is required'),
-                        tax: Yup.string().required('Tax is required'),
-                        status: Yup.string().required('Status is required'),
+                        tax: Yup.number().required('Tax is required').min(0, 'Tax cannot be negative'),
+                        status: Yup.string()
+                            .oneOf(['PENDING', 'COMPLETED', 'CANCELLED'], 'Invalid status')
+                            .required('Status is required'),
                         orderItems: Yup.array().of(
                             Yup.object().shape({
                                 orderId: Yup.string(),
@@ -140,13 +161,13 @@ export default function SalesComp() {
                         ).required('Order items are required'),
                     })
                 }
-                onSubmit={async (values, { setSubmitting, setStatus }) => {
+                onSubmit={async (values: FormValues, { setSubmitting, setStatus }) => {
                     try {
                         console.log('Submitting order with values:', values);
                         const url = 'sales/api' // Adjust the URL as needed
 
                         const payload = {
-                            userId: values.userId,
+                            // userId: values?.userId,
                             guestId: values.guestId,
                             // tax: Number(values.tax),
                             status: values.status,
@@ -177,7 +198,7 @@ export default function SalesComp() {
                     } finally {
                         setSubmitting(false);
                     }
-                }} 
+                }}
 
             >
 
@@ -185,11 +206,11 @@ export default function SalesComp() {
                     handleSubmit, isSubmitting, errors, handleChange, setFieldValue, status, setStatus, values
                 }) => {
                     const subtotal = values.orderItems.reduce((acc, item) => {
-                        const product = products?.find(p => p.id === item.productId);
-                        return acc + (product ? product?.price * item.quantity : 0);
+                        const product = products?.find((p: any) => p.id === item?.productId);
+                        return acc + (product ? product?.price * item?.quantity : 0);
                     }, 0);
 
-                    const taxRate = 0.14; // example: 10%
+                    const taxRate = values?.tax / 100;
                     const tax = subtotal * taxRate;
                     const total = subtotal + tax;
 
@@ -200,9 +221,9 @@ export default function SalesComp() {
                                     Items in your shopping cart
                                 </h2>
                                 <div className="mt-6 grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 md:grid-cols-3 md:gap-y-0 lg:gap-x-8">
-                                    {filteredProducts?.map((product, productIdx) => (
+                                    {filteredProducts?.map((product: ProductType) => (
                                         <div key={product.id} className="group relative cursor-pointer" onClick={() => {
-                                            const itemIndex = values?.orderItems?.findIndex(i => i.productId === product.id);
+                                            const itemIndex = values?.orderItems?.findIndex((i: any) => i.productId === product.id);
                                             let updatedItems = [...values.orderItems];
                                             if (itemIndex >= 0) {
                                                 updatedItems[itemIndex] = {
@@ -215,7 +236,7 @@ export default function SalesComp() {
                                             }
                                             setFieldValue('orderItems', updatedItems);
                                         }}>
-                                            <img alt={product.thumb} src={product.thumb||'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSLkN4VsHXmLN4YHMbn5TJyPO0_SgQWvx8aQmJyJpvaTHaONr52X-T0WmR8QR_JXZmmrww&usqp=CAU'} className="w-fit h-fit object-cover rounded-md" />
+                                            <img alt={`Image of ${product.name}`} src={product.thumb || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSLkN4VsHXmLN4YHMbn5TJyPO0_SgQWvx8aQmJyJpvaTHaONr52X-T0WmR8QR_JXZmmrww&usqp=CAU'} className="w-fit h-fit object-cover rounded-md" />
                                             <h3 className="mt-4 text-sm text-gray-700">
                                                 <a href={product.href}>
                                                     <span className="absolute inset-0" />
@@ -223,7 +244,7 @@ export default function SalesComp() {
                                                 </a>
                                             </h3>
                                             <p className="mt-1 text-sm text-gray-500">{product.color}</p>
-                                            <p className="mt-1 text-sm font-medium text-gray-900">{product.price}</p>
+                                            <p className="mt-1 text-sm font-medium text-gray-900">{product.price.toFixed(2)}</p>
                                         </div>
                                     ))}
                                 </div>
@@ -248,17 +269,25 @@ export default function SalesComp() {
                                 <dl className="mt-6 space-y-4">
                                     <Field>
                                         <Label>Order By</Label>
-                                        {guests && (<GuestSelectCombobox
+                                        {/* {guests && (<GuestSelectCombobox
                                             name="guestId"
                                             options={guests}
-                                            displayValue={(g) => g?.firstName}
-                                        />) }
-                                        
+                                            displayValue={(g:any) => g?.firstName}
+                                        />)} */}
+
+
+                                        {guests?.length > 0 && (
+                                            <GuestSelectCombobox
+                                                name="guestId"
+                                                options={guests}
+                                                displayValue={(g) => `${g.firstName} ${g.lastName}`}
+                                            />
+                                        )}
                                     </Field>
-                                    {values?.orderItems?.map((item, idx) => {
-                                        const product = products?.find(p => p?.id === item?.productId);
+                                    {values?.orderItems?.map((item: any, idx: number) => {
+                                        const product = products?.find((p: any) => p?.id === item?.productId);
                                         return (
-                                            <div key={item?.productId} className="col border-b border-gray-200 py-6 flex items-center gap-x-4 lg:gap-x-6">
+                                            <div key={idx} className="col border-b border-gray-200 py-6 flex items-center gap-x-4 lg:gap-x-6">
                                                 <img alt={product?.thumb} src={product.thumb} className="w-10 object-cover" />
 
                                                 <div className='w-full flex flex-col gap-2'>

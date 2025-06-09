@@ -70,7 +70,7 @@ export async function GET(req: Request) {
     const totalProducts = await prisma.product.count({ where: filters });
 
     // Transform the response to match the expected format
-    const formattedProducts = products.map((product) => ({
+    const formattedProducts = products.map((product:any) => ({
       id: product.id,
       name: product.name,
       price: product.price,
@@ -156,7 +156,7 @@ export async function POST(req: Request) {
     //upload thumb to Cloudinary if provided
     if (thumb) {
       try {
-        
+
         const uploadResponse = await cloudinary.v2.uploader.upload(thumb, {
           folder: "frontdesk/products",
         });
@@ -169,24 +169,15 @@ export async function POST(req: Request) {
       }
     }
 
-    const priceNum = parseFloat(price);
-    const discountNum = discount ? parseFloat(discount) : 0;
-    const stockNum = parseInt(stock);
-
-    if (isNaN(priceNum) || isNaN(stockNum) || (discount && isNaN(discountNum))) {
-      return NextResponse.json({ error: "Price, stock, or discount has invalid format" }, { status: 400 });
-    }
-
-
     const processedInput = {
       thumb: thumbUrl,
       name,
       description,
-      price: priceNum,
-      discount: discountNum,
-      stock: stockNum,
+      price: parseFloat(String(price)),
+      discount: parseFloat(String(discount)),
+      stock: parseInt(String(stock)),
       isPublished: Boolean(isPublished),
-      categoryId: parseInt(categoryId),
+      categoryId: parseInt(String(categoryId)),
       section, // <- must match enum: "BAR", "RESTAURANT", etc.
     };
 
@@ -196,8 +187,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ success: true, prod }, { status: 201 });
 
-  } catch (err) {
-    console.error("Error creating product:", err);
-    return NextResponse.json({ error: err.message || "Internal server error" }, { status: 500 });
+  } catch (error:any) {
+    return NextResponse.json({ error: error?.message || "Internal server error" }, { status: 500 });
   }
 }

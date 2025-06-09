@@ -4,7 +4,7 @@ import { auth } from "@/auth";
 
 
 
-export async function GET(req: Request, { params }: { params: { id: string } }) {
+export async function GET(req: Request,  { params }: { params: Promise<{ id: number }> }) {
   try {
 
     const session = await auth();
@@ -24,7 +24,6 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
     return NextResponse.json(user, { status: 200 }
     );
   } catch (error) {
-    console.error("Error fetching user:", error);
     return NextResponse.json(
       { error: "Failed to fetch user" },
       { status: 500 }
@@ -32,9 +31,10 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
   }
 }
 
-export async function PATCH(req: Request, { params }: { params: { id: string } }) {
+export async function PATCH(req: Request,  { params }: { params: Promise<{ id: number }> }) {
   try {
-    const { id } = params;
+        const { id } = await params;
+
     const body = await req.json();
 
     const updatedGuest = await prisma.user.update({
@@ -53,8 +53,8 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
     });
 
     return NextResponse.json({ success: true, guest: updatedGuest }, { status: 200 });
-  } catch (err) {
-    return NextResponse.json({ error: err.message || "Internal server error" }, { status: 500 });
+  } catch (error:any) {
+    return NextResponse.json({ error: error.message || "Internal server error" }, { status: 500 });
   }
 }
 

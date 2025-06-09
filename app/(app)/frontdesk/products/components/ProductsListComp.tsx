@@ -31,12 +31,12 @@ export default function ProductsListComp() {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    dispatch(fetchPublicCategoryList());
-    dispatch(fetchPublicProductList()).then(() => setLoading(false));
+    dispatch(fetchPublicCategoryList() as any);
+    dispatch(fetchPublicProductList() as any).then(() => setLoading(false));
   }, [dispatch])
 
-  const prod = useSelector((state: RootState) => state.payment.products)
-  const selected_product = useSelector((state: RootState) => state.payment.selected_product)
+  const prod = useSelector((state: RootState) => state.payment?.products || []) as any;
+  const selected_product = useSelector((state: RootState) => state.payment.selected_product) as any;
   const category = useSelector((state: RootState) => state.payment.category)
 
   if (loading) return <LoadingComp />
@@ -45,7 +45,7 @@ export default function ProductsListComp() {
     <>
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div className="max-sm:w-full sm:flex-1">
-          <Heading>Product Menu</Heading>
+          <Heading>Menu Items</Heading>
           <div className="mt-4 flex max-w-xl gap-4">
             <div className="flex-1">
               <InputGroup>
@@ -134,7 +134,7 @@ export default function ProductsListComp() {
                   const errorMessage = data?.message || 'Failed to create room.';
                   setStatus(errorMessage);
                 } else {
-                  dispatch(fetchPublicProductList());
+                  dispatch(fetchPublicProductList() as any);
                   setIsOpen(false)
                 }
               } catch (error) {
@@ -186,7 +186,7 @@ export default function ProductsListComp() {
                     <Label>Select Category</Label>
                     <Select name="categoryId" value={values.categoryId} onChange={handleChange}>
                       <option value="">Select Category</option>
-                      {category?.map((cat) => (
+                      {category?.map((cat:any) => (
                         <option key={cat.id} value={cat.id}>
                           {cat.name}
                         </option>
@@ -214,9 +214,9 @@ export default function ProductsListComp() {
                           }
                         }}
                       />
-                      {errors.thumb && (
-                        <div className="text-sm text-red-600 mt-1">{errors.thumb}</div>
-                      )}
+                      {/* {errors?.thumb && (
+                        <div className="text-sm text-red-600 mt-1">{errors?.thumb}</div>
+                      )} */}
                     </div>
 
                   </Field>
@@ -241,9 +241,9 @@ export default function ProductsListComp() {
                       onBlur={handleChange}
                       placeholder="Enter product details, materials, usage info, etc."
                     />
-                    {errors.description && (
+                    {/* {errors.description && (
                       <div className="mt-1 text-sm text-red-600">{errors.description}</div>
-                    )}
+                    )} */}
                   </Field>
 
                   <Divider className='my-5' />
@@ -284,11 +284,11 @@ export default function ProductsListComp() {
       </div>
       <ul className="mt-10">
         {prod?.length < 1 && (
-          <TableRow className="h-24 text-start" colSpan={5}>
+          <TableRow className="h-24 text-start" >
             <TableCell className='text-lg text-pink-500 flex items-center flex-row gap-2'><span>No products found</span> <NoSymbolIcon className='size-4' /></TableCell>
           </TableRow>)
         }
-        {prod?.map((product, index) => (
+        {prod?.map((product:any, index:any) => (
           <li key={product.id}>
             <Divider soft={index > 0} />
             <div className="flex items-center justify-between">

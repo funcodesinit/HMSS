@@ -28,13 +28,13 @@ export default function UserListComp() {
 
   useEffect(() => {
     setLoading(true)
-    dispatch(fetchUsers()).finally(() => setLoading(false))
+    dispatch(fetchUsers() as any).finally(() => setLoading(false))
   }, [dispatch ])
 
   useEffect(() => {
     const filters = { page, limit, search, city, country, company }
     setLoading(true)
-    dispatch(fetchUsers(filters)).finally(() => setLoading(false))
+    dispatch(fetchUsers(filters) as any).finally(() => setLoading(false))
   }, [page, search, city, country, company])
 
   const users = useSelector((state: RootState) => state.user.users)
@@ -109,7 +109,7 @@ export default function UserListComp() {
               </TableCell>
             </TableRow>
           ) : (
-            users?.data?.map((user) => (
+            users?.data?.map((user:any) => (
               <TableRow key={user?.id} href={`/frontdesk/guests/${user?.id}`}>
                 <TableCell>{user?.firstName} {user?.lastName}</TableCell>
                 <TableCell>{user?.email}</TableCell>

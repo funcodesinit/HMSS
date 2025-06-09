@@ -1,6 +1,5 @@
   import { NextResponse } from 'next/server';
   import { prisma } from '@/lib/prisma'; // adjust this path to your Prisma client
-  import guests from '@/app/api/apisauce/guests';
 
   // GET /api/pos - Fetch all POS entries
   export async function GET() {

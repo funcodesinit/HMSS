@@ -1,7 +1,6 @@
 // Created by kev, 2023-10-05 12:00:00
 'use client'
 
-import { Avatar } from '@/components/avatar'
 import { Button } from '@/components/button'
 import { Heading } from '@/components/heading'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/table'
@@ -28,18 +27,17 @@ export default function CustomerListComp() {
 
   useEffect(() => {
     setLoading(true)
-    dispatch(fetchGuests()).finally(() => setLoading(false))
+    dispatch(fetchGuests() as any).finally(() => setLoading(false))
   }, [dispatch ])
 
   useEffect(() => {
     const filters = { page, limit, search, city, country, company }
     setLoading(true)
-    dispatch(fetchGuests(filters)).finally(() => setLoading(false))
+    dispatch(fetchGuests(filters) as any).finally(() => setLoading(false))
   }, [page, search, city, country, company])
 
   const guests = useSelector((state: RootState) => state.user.guests)
   const totalGuests = useSelector((state: RootState) => state?.user?.guests?.pagination?.total)
-
 
   const totalPages = Math.ceil(totalGuests / limit)
   console.log('totalPages:',totalPages,totalGuests,limit)
@@ -111,7 +109,7 @@ export default function CustomerListComp() {
               </TableCell>
             </TableRow>
           ) : (
-            guests?.data?.map((user) => (
+            guests?.data?.map((user:any) => (
               <TableRow key={user?.id} href={`/frontdesk/guests/${user?.id}`}>
                 <TableCell>{user?.firstName} {user?.lastName}</TableCell>
                 <TableCell>{user?.email}</TableCell>

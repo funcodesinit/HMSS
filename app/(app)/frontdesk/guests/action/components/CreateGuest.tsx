@@ -35,7 +35,7 @@ export default function CreateGuest({ id }: Props) {
 
     // Fetch only in edit mode
     useEffect(() => {
-        dispatch(fetchGuest(id));
+        dispatch(fetchGuest(id) as any);
     }, [id]);
 
     const isEditMode = !!id;
