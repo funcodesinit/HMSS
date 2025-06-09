@@ -24,10 +24,6 @@ interface Props {
     id?: string // optional, for edit mode
 }
 
-// function classNames(...classes) {
-//     return classes.filter(Boolean).join(' ')
-// }
-
 export default function CreateReserve({ id }: Props) {
     const router = useRouter()
     const dispatch = useDispatch()

@@ -3,7 +3,7 @@
     "target": "ES2017",
     "lib": ["dom", "dom.iterable", "esnext"],
     "typeRoots": ["./types", "./node_modules/@types"],
-    "types": ["next-auth"],
+    "types": ["node"], //["next-auth"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,

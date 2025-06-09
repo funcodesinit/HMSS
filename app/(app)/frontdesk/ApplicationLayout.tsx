@@ -45,15 +45,14 @@ import {
   SparklesIcon,
   Square2StackIcon,
   TicketIcon,
-} from '@heroicons/react/20/solid'
-import { useSession } from 'next-auth/react'
+} from '@heroicons/react/20/solid' 
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 
 
-export default function ApplicationLayout({ children }: { children: React.ReactNode }) {
+export default function ApplicationLayout({ children, session }: { children: React.ReactNode,session:any }) {
   let pathname = usePathname()
-  const { data: session } = useSession()
+  
   const user = session?.user as {
     id: any;
     email?: string;

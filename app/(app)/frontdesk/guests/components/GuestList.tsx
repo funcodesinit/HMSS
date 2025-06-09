@@ -1,7 +1,6 @@
 // Created by kev, 2023-10-05 12:00:00
 'use client'
 
-import { Avatar } from '@/components/avatar'
 import { Button } from '@/components/button'
 import { Heading } from '@/components/heading'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/table'

@@ -13,7 +13,7 @@ const layout = async ({ children }: { children: React.ReactNode }) => {
 
     return <StoreProvider>
         <AuthProvider session={session} >
-            <ApplicationLayout >
+            <ApplicationLayout session={session}>
                 {children}
             </ApplicationLayout>;
         </AuthProvider>

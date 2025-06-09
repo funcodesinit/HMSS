@@ -70,7 +70,7 @@ export async function GET(req: Request) {
     const totalProducts = await prisma.product.count({ where: filters });
 
     // Transform the response to match the expected format
-    const formattedProducts = products.map((product) => ({
+    const formattedProducts = products.map((product:any) => ({
       id: product.id,
       name: product.name,
       price: product.price,
