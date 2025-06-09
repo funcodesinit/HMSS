@@ -24,9 +24,9 @@ interface Props {
     id?: string // optional, for edit mode
 }
 
-function classNames(...classes) {
-    return classes.filter(Boolean).join(' ')
-}
+// function classNames(...classes) {
+//     return classes.filter(Boolean).join(' ')
+// }
 
 export default function CreateReserve({ id }: Props) {
     const router = useRouter()
@@ -35,7 +35,7 @@ export default function CreateReserve({ id }: Props) {
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        dispatch(fetchReservation(id));
+        dispatch(fetchReservation(id) as any);
     }, [id])
 
     useEffect(() => {
@@ -153,7 +153,7 @@ export default function CreateReserve({ id }: Props) {
                 {({ handleSubmit, handleChange, isSubmitting, errors, touched, values, resetForm, setFieldValue }) => {
 
                     useEffect(() => {
-                        const selectedGuest = guests?.find((g) => g.id === values?.guestId);
+                        const selectedGuest = guests?.find((g:any) => g.id === values?.guestId);
                         if (selectedGuest) {
                             setFieldValue('guest', selectedGuest);
                         }
@@ -181,7 +181,7 @@ export default function CreateReserve({ id }: Props) {
                                     <Label>Select Room</Label>
                                     <Select name="roomId" value={values.roomId} onChange={handleChange}>
                                         <option value="">Select Room</option>
-                                        {rooms?.map((room) => (
+                                        {rooms?.map((room:any) => (
                                             <option key={room.id} value={room.id}>
                                                 Room No. {room.number} - {room.type} - {room.status}
                                             </option>
@@ -195,7 +195,7 @@ export default function CreateReserve({ id }: Props) {
                                         <GuestSelectCombobox
                                             name="guestId"
                                             options={guests}
-                                            displayValue={(g) => `${g?.firstName}`}
+                                            displayValue={(g:any) => `${g?.firstName}`}
                                         />
                                     ) : (
                                         <p className="text-sm text-zinc-500">Loading guests...</p>

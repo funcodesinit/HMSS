@@ -121,7 +121,7 @@ export default function ReserveComp() {
             setPage(1)
           }}
         />
-        <Button size="sm" variant="outline" onClick={handleClearFilters}>
+        <Button onClick={handleClearFilters}>
           Clear
         </Button>
       </div>
@@ -145,7 +145,7 @@ export default function ReserveComp() {
               </TableCell>
             </TableRow>
           ) : (
-            reservations.data.map((item) => (
+            reservations.data.map((item:any) => (
               <TableRow key={item.id} href={`/frontdesk/reservations/${item.id}`}>
                 <TableCell>{item.guest?.firstName} {item.guest?.lastName}</TableCell>
                 <TableCell>{item.room?.number}</TableCell>

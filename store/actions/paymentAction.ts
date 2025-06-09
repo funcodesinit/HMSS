@@ -4,6 +4,7 @@ import payments from "@/app/api/apisauce/payments"
 import { ActionTypes } from "../constants/action-types"
 import billing from "@/app/api/apisauce/billing"
 import orders from "@/app/api/apisauce/orders"
+import { AppDispatch } from "..";
 
 // export const fetchOrders = (options={}) => async (dispatch) => {
 //     const user = await payments.list(options)
@@ -13,7 +14,7 @@ import orders from "@/app/api/apisauce/orders"
 //     }) 
 // } 
  
-export const SetPosStats = () => (dispatch, getState) => {
+export const SetPosStats = () => (dispatch:AppDispatch, getState:any) => {
     const posList = getState().payment.pos;
     if (!posList || posList.length === 0) {
       dispatch({
@@ -28,8 +29,8 @@ export const SetPosStats = () => (dispatch, getState) => {
       return;
     }
 
-    const totalAmount = posList.reduce((sum, pos) => sum + pos.amount, 0);
-    const uniqueGuestIds = [...new Set(posList.map(pos => pos.guestId))];
+    const totalAmount = posList.reduce((sum:any, pos:any) => sum + pos.amount, 0);
+    const uniqueGuestIds = [...new Set(posList.map((pos:any) => pos.guestId))];
     const uniqueGuestCount = uniqueGuestIds.length;
     const averageTransactionsPerGuest = posList.length / uniqueGuestCount || 0;
     const averageAmountPerGuest = totalAmount / uniqueGuestCount || 0;
@@ -45,7 +46,7 @@ export const SetPosStats = () => (dispatch, getState) => {
     });
   };
   
-export const fetchBills = (options={}) => async (dispatch) => {
+export const fetchBills = (options={}) => async (dispatch:AppDispatch) => {
     const user = await billing.list(options)
     dispatch({
         type: ActionTypes.SET_BILLS,
@@ -53,7 +54,7 @@ export const fetchBills = (options={}) => async (dispatch) => {
     }) 
 } 
 
-export const fetchOrders = (options={}) => async (dispatch) => {
+export const fetchOrders = (options={}) => async (dispatch:AppDispatch) => {
     const orderz = await orders.list(options)
     console.log("Orders fetched:", orderz)
     dispatch({

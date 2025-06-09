@@ -24,9 +24,11 @@ const AppContext = createContext({
 });
 
 
-
+interface AppProviderProps {
+    children: React.ReactNode;
+}
 // Create a provider component
-export const AppProvider = ({ children }) => {
+export const AppProvider = ({ children }:AppProviderProps) => {
   const dispatch = useDispatch()
   const { data: session, status } = useSession()
   const id = session?.user?.id

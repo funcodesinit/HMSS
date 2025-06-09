@@ -35,7 +35,7 @@ export default function BillingComp() {
     }, [dispatch])
 
 
-    const bills = useSelector((state: RootState) => state.payment.bills || []);
+    const bills = useSelector((state: RootState) => state.payment.bills || []) as any;
     const reservations = useSelector((state: RootState) => state.room.reservations);
 
     if (loading) return <LoadingComp />
@@ -192,18 +192,16 @@ export default function BillingComp() {
                             <TableCell className='text-lg text-pink-500 flex items-center flex-row gap-2'><span>No bills found</span> <NoSymbolIcon className='size-4' /></TableCell>
                         </TableRow>)
                     }
-                    {bills?.error && (
+                    {bills.error ? (
                         <TableRow>
                             <TableCell colSpan={5} className="text-pink-500 flex items-center gap-2">
                                 <div className=' text-sm text-red-700'>
-
                                     {bills?.error}
                                 </div>
                             </TableCell>
                         </TableRow>
-                    )}
+                    ): null }
                     {Array.isArray(bills) && bills.length === 0 && (
-
                         <TableRow  >
                             <TableCell colSpan={5} className="text-pink-500 flex items-center gap-2">
                                 <div className='text-sm text-red-700'>

@@ -109,7 +109,7 @@ export default function UserListComp() {
               </TableCell>
             </TableRow>
           ) : (
-            users?.data?.map((user) => (
+            users?.data?.map((user:any) => (
               <TableRow key={user?.id} href={`/frontdesk/guests/${user?.id}`}>
                 <TableCell>{user?.firstName} {user?.lastName}</TableCell>
                 <TableCell>{user?.email}</TableCell>

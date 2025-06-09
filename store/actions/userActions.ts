@@ -1,8 +1,9 @@
 import userz from "@/app/api/apisauce/userz"
 import { ActionTypes } from "../constants/action-types"
 import guests from '@/app/api/apisauce/guests'
+import { AppDispatch } from ".."
 
-export const fetchGuests = (options={}) => async (dispatch) => {
+export const fetchGuests = (options={}) => async (dispatch:AppDispatch) => {
     const user = await guests.list(options)
     dispatch({
         type: ActionTypes.SET_GUESTS,
@@ -10,7 +11,7 @@ export const fetchGuests = (options={}) => async (dispatch) => {
     }) 
 } 
 
-export const fetchGuest = (id:any,options = {}) => async (dispatch) => { 
+export const fetchGuest = (id:any,options = {}) => async (dispatch:AppDispatch) => { 
     const userList = await guests.getDetails(id, options); 
  
     dispatch ({
@@ -20,7 +21,7 @@ export const fetchGuest = (id:any,options = {}) => async (dispatch) => {
 }
 
 
-export const fetchUsers = (options={}) => async (dispatch) => {
+export const fetchUsers = (options={}) => async (dispatch:AppDispatch) => {
     const user = await userz.list(options);
     dispatch({
         type: ActionTypes.SET_USERS,
@@ -28,7 +29,7 @@ export const fetchUsers = (options={}) => async (dispatch) => {
     }) 
 } 
 
-export const fetchUser = (id:any,options = {}) => async (dispatch) => {
+export const fetchUser = (id:any,options = {}) => async (dispatch:AppDispatch) => {
     const user = await userz.getDetails(id, options);
     dispatch({
         type: ActionTypes.SET_SELECTED_USER,

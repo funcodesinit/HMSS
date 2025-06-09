@@ -13,7 +13,7 @@ export default function OrdersComp() {
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(true);
 
-    const orders = useSelector((state: RootState) => state.payment.orders);
+    const orders = useSelector((state: RootState) => state.payment.orders||[]) as any;
 
     useEffect(() => {
         dispatch(fetchOrders() as any).then(() => setLoading(false));
@@ -63,7 +63,7 @@ export default function OrdersComp() {
                                 {order?.guest?.firstName} {order?.guest?.lastName}
                             </TableCell>
                             <TableCell className="text-zinc-600">
-                                {order?.items?.map((item, index) => (
+                                {order?.items?.map((item:any, index:number) => (
                                     <div key={index}>
                                         • {item?.product?.name}
                                     </div>

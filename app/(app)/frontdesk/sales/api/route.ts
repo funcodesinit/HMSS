@@ -22,7 +22,7 @@ export async function POST(req: Request) {
 
     const createdOrder = await prisma.order.create({
       data: {
-        userId: parseInt(userId),
+        userId: Number(userId),
         guestId,
         tax: parseInt(tax),
         status,
