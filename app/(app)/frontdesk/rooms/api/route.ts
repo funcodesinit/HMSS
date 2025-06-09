@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { RoomStatus, RoomType } from "@prisma/client";
+// import { RoomStatus, RoomType } from "@prisma/client";
 
 export async function GET(req: NextRequest) {
   try {
@@ -47,7 +47,7 @@ export async function GET(req: NextRequest) {
     }
 
     if (status) {
-      whereClause.status = { equals: status as RoomStatus };
+      whereClause.status = { equals: status as any };
     }
 
     // if (type) {
