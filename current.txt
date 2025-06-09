@@ -20,3 +20,17 @@ package.json
     "start": "next start",
     "lint": "next lint"
 }
+
+# rm -rf node_modules/.prisma
+rm -rf node_modules/@prisma
+rm -rf node_modules
+rm package-lock.json
+npm install
+npx prisma generate
+
+// "seed" : "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
+
+# 280f41db15ce4eb7bd4ff00150a490c9
+
+# database_url
+# DATABASE_URL=postgresql://neondb_owner:npg_jQ6ifXE1TSGb@ep-floral-poetry-a4592612-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require

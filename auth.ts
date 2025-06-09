@@ -37,32 +37,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }),
   ],
   callbacks: {
-    // async jwt({ token, user }) {
-    //   if (user) {
-    //     // set user role here          
-    //     token.id = user?.id;
-    //     token.phoneNumber = user?.phoneNumber;
-    //     token.email = user?.email;
-    //     token.firstName = user?.firstName;
-    //     token.lastName = user?.lastName;
-    //     token.role = user?.role;
-    //     token.avatar = user?.avatar;
-
-    //   }
-    //   return token;
-    // },
-    // async session({ session, token }) {
-    //   if (token) {
-    //     session.user.id = token?.id;
-    //     session.user.email = token.email;
-    //     session.user.phoneNumber = token?.phoneNumber;
-    //     session.user.firstName = token?.firstName;
-    //     session.user.lastName = token?.lastName;
-    //     session.user.avatar = token?.avatar;
-    //     session.user.role = token.role; 
-    //   }
-    //   return session;
-    // },
+ 
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id ;
@@ -94,6 +69,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   session: {
     strategy: "jwt",
   },
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.AUTH_SECRET,
 
 })
