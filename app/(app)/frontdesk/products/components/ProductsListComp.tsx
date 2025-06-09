@@ -45,7 +45,7 @@ export default function ProductsListComp() {
     <>
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div className="max-sm:w-full sm:flex-1">
-          <Heading>Product Menu</Heading>
+          <Heading>Menu Items</Heading>
           <div className="mt-4 flex max-w-xl gap-4">
             <div className="flex-1">
               <InputGroup>
