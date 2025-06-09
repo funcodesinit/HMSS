@@ -10,3 +10,13 @@
 // 4. npx prisma db seed
 
 //firebase google auth Public-facing name for project - [project-221358175785] Support email  -  [kevtheprogrammer16@gmail.com]
+    
+package.json
+// "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
+"scripts": {
+    "dev": "next dev --turbopack",
+    "build": "prisma generate && next build",
+    "postinstall": "prisma generate",
+    "start": "next start",
+    "lint": "next lint"
+}
